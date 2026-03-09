@@ -66,7 +66,7 @@ const AuditModal = ({ isOpen, onClose }: AuditModalProps) => {
           // Get it in 30 seconds at https://web3forms.com
           // Enter revenuecapture@gmail.com — submissions will land there.
           // ─────────────────────────────────────────────────────────
-          access_key: "YOUR_WEB3FORMS_KEY",
+          access_key: "0adbb756-64a7-44b8-b1f4-26b3dbe0cc33",
           subject: `revCap Audit Request — ${form.auditType || "General"}`,
           from_name: form.name,
           ...form,
