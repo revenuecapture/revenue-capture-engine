@@ -54,10 +54,6 @@ const Footer = () => {
         <p className="font-body text-[13px] font-light text-text-muted-dark">
           © 2026 revCap. All rights reserved.
         </p>
-        <div className="flex gap-6">
-          <span className="font-body text-[13px] font-light text-text-muted-dark">revcap.io</span>
-          <span className="font-body text-[13px] font-light text-text-muted-dark">revcap.online</span>
-        </div>
       </div>
     </div>
   </footer>
