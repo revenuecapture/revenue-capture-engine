@@ -91,17 +91,16 @@ const AuditModal = ({ isOpen, onClose }: AuditModalProps) => {
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Backdrop */}
+          {/* Backdrop — also serves as the scroll/flex container */}
           <motion.div
             key="backdrop"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3, ease }}
-            className="fixed inset-0 z-[100] bg-black/70 backdrop-blur-sm"
-            onClick={onClose}
-          />
-
+            className="fixed inset-0 z-[100] bg-black/70 backdrop-blur-sm flex items-start justify-center overflow-y-auto py-8 px-4"
+            onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+          >
           {/* Modal panel */}
           <motion.div
             key="modal"
@@ -109,14 +108,12 @@ const AuditModal = ({ isOpen, onClose }: AuditModalProps) => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 30, scale: 0.97 }}
             transition={{ duration: 0.4, ease }}
-            className="fixed inset-x-4 z-[110] mx-auto max-w-[560px] overflow-y-auto rounded-lg"
+            className="relative z-[110] w-full max-w-[560px] rounded-lg my-auto"
             style={{
               background: "var(--bg-dark)",
               border: "1px solid rgba(239,223,187,0.12)",
-              maxHeight: "85svh",
-              top: "50%",
-              transform: "translateY(-50%)",
             }}
+            onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
             <div className="flex items-start justify-between border-b border-dutch-white/[0.08] px-8 py-6">
@@ -261,6 +258,7 @@ const AuditModal = ({ isOpen, onClose }: AuditModalProps) => {
                 </form>
               )}
             </div>
+          </motion.div>
           </motion.div>
         </>
       )}
