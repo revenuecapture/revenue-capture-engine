@@ -18,7 +18,12 @@ const Hero = () => {
     <section
       className="dark-section relative flex h-svh items-center justify-center overflow-hidden"
       style={{
-        background: `radial-gradient(ellipse at 60% 40%, rgba(115,47,55,0.15), transparent 60%), var(--midnight-green)`,
+        background: `
+          radial-gradient(ellipse at 60% 40%, rgba(115,47,55,0.2), transparent 55%),
+          radial-gradient(ellipse at 10% 80%, rgba(55,93,138,0.18), transparent 50%),
+          radial-gradient(ellipse at 85% 85%, rgba(9,82,86,0.25), transparent 45%),
+          var(--midnight-green)
+        `,
       }}
     >
       <div className="relative z-10 text-center px-6">
@@ -55,7 +60,7 @@ const Hero = () => {
           transition={{ delay: 0.7, duration: 0.7, ease }}
           className="mx-auto mt-8 max-w-[560px] font-body text-[clamp(17px,2vw,22px)] font-light leading-relaxed text-text-muted-dark"
         >
-          We build, market, and convert — turning your vision into a profitable reality.
+          We build, market, and convert. Turning your vision into a profitable reality.
         </motion.p>
 
         <motion.div

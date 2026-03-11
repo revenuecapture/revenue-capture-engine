@@ -29,7 +29,7 @@ const Team = () => (
         </h2>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
         {members.map((m, i) => (
           <motion.div
             key={m.name}
@@ -37,8 +37,11 @@ const Team = () => (
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7, delay: i * 0.15, ease }}
-            className="rounded-lg border border-dutch-white/10 bg-[rgba(255,255,255,0.04)] p-8"
+            className="rounded-lg border border-dutch-white/10 bg-[rgba(255,255,255,0.04)] p-10 md:p-12"
           >
+            <div className="mb-6 flex h-[120px] w-[120px] items-center justify-center rounded-lg bg-dutch-white/[0.08]">
+              <span className="font-heading text-[40px] font-black text-text-muted-dark">{m.initials}</span>
+            </div>
             <h3 className="font-heading text-[28px] font-extrabold text-dutch-white">{m.name}</h3>
             <span className="mt-2 inline-block rounded-full bg-wine px-3.5 py-1 font-body text-[12px] font-normal uppercase tracking-[0.2em] text-dutch-white">
               {m.role}
@@ -46,6 +49,9 @@ const Team = () => (
             <p className="mt-4 font-body text-[16px] font-light leading-relaxed text-text-muted-dark">
               {m.desc}
             </p>
+            <a href="#" className="mt-4 inline-block font-body text-[14px] font-medium text-wine">
+              LinkedIn →
+            </a>
           </motion.div>
         ))}
       </div>

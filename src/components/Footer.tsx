@@ -15,8 +15,11 @@ const Footer = () => {
     <div className="mx-auto max-w-[1280px]">
       <div className="grid grid-cols-1 gap-12 md:grid-cols-3">
         <div>
-          <p className="font-heading text-[22px] font-bold text-dutch-white">
-            rev<span className="uppercase">C</span>ap
+          <p
+            className="font-heading text-[22px] font-bold text-dutch-white"
+            style={{ letterSpacing: "-0.03em" }}
+          >
+            revCap
           </p>
           <p className="mt-2 font-body text-[13px] font-light uppercase tracking-[0.2em] text-text-muted-dark">
             Revenue Capture Agency
@@ -43,9 +46,9 @@ const Footer = () => {
           <p className="font-body text-[14px] font-light text-text-muted-dark">+92 324 4244 914</p>
           <button
             onClick={openModal}
-            className="mt-2 text-left font-body text-[14px] font-medium text-wine underline hover:text-dutch-white transition-colors duration-200"
+            className="mt-2 text-left font-body text-[14px] font-medium text-wine hover:underline"
           >
-            Get in touch →
+            Get in touch
           </button>
         </div>
       </div>

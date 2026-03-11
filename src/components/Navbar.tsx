@@ -24,16 +24,35 @@ const Navbar = () => {
   return (
     <>
       <nav
-        className="fixed top-0 left-0 right-0 z-50 transition-all duration-[400ms] ease-out"
-        style={{
-          background: scrolled ? "rgba(7, 55, 58, 0.92)" : "transparent",
-          backdropFilter: scrolled ? "blur(16px)" : "none",
-          borderBottom: scrolled ? "1px solid rgba(239, 223, 187, 0.1)" : "1px solid transparent",
-        }}
+        className="fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-out"
+        style={
+          scrolled
+            ? {
+                margin: "12px 16px 0",
+                borderRadius: "12px",
+                background: "rgba(7, 55, 58, 0.55)",
+                backdropFilter: "blur(24px) saturate(180%)",
+                WebkitBackdropFilter: "blur(24px) saturate(180%)",
+                border: "1px solid rgba(239, 223, 187, 0.13)",
+                boxShadow: "0 8px 32px rgba(0,0,0,0.28), inset 0 1px 0 rgba(239,223,187,0.08)",
+              }
+            : {
+                margin: "0",
+                borderRadius: "0",
+                background: "transparent",
+                backdropFilter: "none",
+                border: "1px solid transparent",
+                boxShadow: "none",
+              }
+        }
       >
-        <div className="mx-auto flex h-[72px] max-w-[1280px] items-center justify-between px-6 md:px-10">
-          <a href="#" className="font-heading text-[22px] font-bold text-dutch-white">
-            rev<span className="uppercase">C</span>ap
+        <div className="mx-auto flex h-[64px] max-w-[1280px] items-center justify-between px-6 md:px-8">
+          <a
+            href="#"
+            className="font-heading text-[22px] font-bold text-dutch-white"
+            style={{ letterSpacing: "-0.03em" }}
+          >
+            revCap
           </a>
 
           <div className="hidden items-center gap-8 md:flex">

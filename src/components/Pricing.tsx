@@ -16,7 +16,7 @@ const tiers = [
     ideal: "Businesses just getting started or testing a new market.",
     features: [
       "Foundational brand building on 1 platform (LinkedIn)",
-      "Content strategy & creation (4–6 posts/month)",
+      "Content strategy & creation (4-6 posts/month)",
       "Basic lead capture setup",
       "Monthly analytics report",
       "Dedicated account manager",
@@ -33,7 +33,7 @@ const tiers = [
     ideal: "Established businesses ready to scale and capture more revenue.",
     features: [
       "All Launchpad services",
-      "Brand building on 2–3 platforms (LinkedIn, Facebook, Instagram)",
+      "Brand building on 2-3 platforms (LinkedIn, Facebook, Instagram)",
       "Advanced lead generation & funnel optimization",
       "Dedicated sales funnel support",
       "Ad creative production",
@@ -64,9 +64,25 @@ const tiers = [
 const Pricing = () => {
   const { openModal } = useModal();
   return (
-  <section id="pricing" className="dark-section bg-midnight-green py-[140px] px-6 md:px-10">
+  <section
+    id="pricing"
+    className="dark-section relative overflow-hidden py-[140px] px-6 md:px-10"
+    style={{
+      background: `
+        radial-gradient(ellipse at 50% 100%, rgba(55,93,138,0.22), transparent 55%),
+        radial-gradient(ellipse at 0% 0%, rgba(115,47,55,0.12), transparent 45%),
+        var(--midnight-green)
+      `,
+    }}
+  >
     <div className="relative z-10 mx-auto max-w-[1100px]">
-      <div className="mb-16 text-center">
+      <motion.div
+        className="mb-16 text-center"
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.7, ease }}
+      >
         <p className="mb-4 font-body text-[12px] font-normal uppercase tracking-[0.3em] text-text-muted-dark">
           Pricing
         </p>
@@ -74,19 +90,19 @@ const Pricing = () => {
           Aligned with your growth<span className="text-wine">.</span>
         </h2>
         <p className="mx-auto mt-6 max-w-[580px] font-body text-[18px] font-light leading-relaxed text-text-muted-dark">
-          We offer tiered packages to meet you where you are. And because we believe in what we do, our growth packages include a revenue share — we only win when you win.
+          We offer tiered packages to meet you where you are. Our growth packages include a revenue share. We only win when you win.
         </p>
-      </div>
+      </motion.div>
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         {tiers.map((tier, i) => (
           <motion.div
             key={tier.name}
-            initial={{ opacity: 0, y: 40 }}
+            initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: i * 0.12, ease }}
-            className="flex flex-col rounded-lg p-10 md:p-12 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_0_40px_rgba(239,223,187,0.06)]"
+            transition={{ duration: 0.7, delay: i * 0.15, ease }}
+            className="flex flex-col rounded-lg p-10 md:p-12"
             style={{
               background: tier.featured ? "rgba(55, 93, 138, 0.25)" : "rgba(255,255,255,0.04)",
               border: tier.featured ? "1.5px solid var(--federal-blue)" : "1px solid rgba(239,223,187,0.1)",
@@ -105,7 +121,7 @@ const Pricing = () => {
               <span className="text-[20px] font-normal text-text-muted-dark">{tier.period}</span>
             </p>
             {tier.revShare && (
-              <p className="mt-2 font-body text-[16px] font-semibold text-dutch-white/80">{tier.revShareText}</p>
+              <p className="mt-1 font-body text-[14px] font-light text-wine">{tier.revShareText}</p>
             )}
             <div className="my-6 h-px bg-dutch-white/10" />
             <p className="font-body text-[15px] font-light italic text-text-muted-dark">

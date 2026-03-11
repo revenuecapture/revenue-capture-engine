@@ -8,7 +8,17 @@ const CTASection = () => {
   const words = ["Your", "revenue", "is", "waiting."];
 
   return (
-    <section id="cta" className="bg-wine py-[160px] px-6 md:px-10">
+    <section
+      id="cta"
+      className="relative overflow-hidden py-[160px] px-6 md:px-10"
+      style={{
+        background: `
+          radial-gradient(ellipse at 30% 20%, rgba(115,47,55,0.6), transparent 50%),
+          radial-gradient(ellipse at 80% 80%, rgba(55,93,138,0.3), transparent 50%),
+          var(--wine)
+        `,
+      }}
+    >
       <div className="mx-auto max-w-[900px] text-center">
         <h2
           className="font-heading font-black text-dutch-white leading-[0.95]"
@@ -34,7 +44,7 @@ const CTASection = () => {
           transition={{ duration: 0.7, delay: 0.5, ease }}
           className="mx-auto mt-8 max-w-[520px] font-body text-[19px] font-light leading-relaxed text-dutch-white/75"
         >
-          Start with a free audit. No commitment. No pitch. Just a clear picture of where your revenue is going — and how to capture it.
+          Start with a free audit. No commitment. No pitch. Just a clear picture of where your revenue is going and how to capture it.
         </motion.p>
         <motion.div
           initial={{ opacity: 0, y: 20 }}

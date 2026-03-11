@@ -12,7 +12,7 @@ const steps = [
   {
     num: "02",
     title: "Brand Marketing",
-    desc: "We launch with compelling content and targeted messaging, generating evergreen interest. Not just impressions — positioning.",
+    desc: "We launch with compelling content and targeted messaging, generating evergreen interest. Not just impressions. Positioning.",
     barColor: "var(--federal-blue)",
   },
   {
@@ -30,25 +30,41 @@ const steps = [
 ];
 
 const Framework = () => (
-  <section id="framework" className="dark-section bg-midnight-green py-[140px] px-6 md:px-10">
+  <section
+    id="framework"
+    className="dark-section relative overflow-hidden py-[140px] px-6 md:px-10"
+    style={{
+      background: `
+        radial-gradient(ellipse at 0% 30%, rgba(55,93,138,0.2), transparent 50%),
+        radial-gradient(ellipse at 100% 70%, rgba(115,47,55,0.15), transparent 50%),
+        var(--midnight-green)
+      `,
+    }}
+  >
     <div className="relative z-10 mx-auto max-w-[1280px]">
-      <div className="mb-16 text-center">
-        <p className="mb-4 font-body text-[14px] font-normal uppercase tracking-[0.3em] text-text-muted-dark">
+      <motion.div
+        className="mb-16 text-center"
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.7, ease }}
+      >
+        <p className="mb-4 font-body text-[12px] font-normal uppercase tracking-[0.3em] text-text-muted-dark">
           How We Work
         </p>
         <h2 className="font-heading font-black text-dutch-white" style={{ fontSize: "clamp(40px, 5vw, 72px)", lineHeight: 1 }}>
           The Blueprint<span className="text-wine">.</span>
         </h2>
-      </div>
+      </motion.div>
 
       <div className="space-y-0">
         {steps.map((step, i) => (
           <motion.div
             key={step.num}
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: i * 0.15, ease }}
+            initial={{ opacity: 0, x: i % 2 === 0 ? -60 : 60 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.8, delay: 0.1, ease }}
             className="relative border-b border-dutch-white/[0.08] py-12 md:py-16"
           >
             <div className="flex flex-col gap-6 md:flex-row md:items-center md:gap-12">
@@ -62,7 +78,7 @@ const Framework = () => (
                 <h3 className="mb-3 font-heading text-[36px] font-extrabold text-dutch-white leading-[1.1]">
                   {step.title}
                 </h3>
-                <p className="max-w-[540px] font-body text-[19px] font-light text-text-muted-dark leading-relaxed">
+                <p className="max-w-[540px] font-body text-[17px] font-light text-text-muted-dark leading-relaxed">
                   {step.desc}
                 </p>
               </div>
