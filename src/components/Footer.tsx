@@ -43,7 +43,7 @@ const Footer = () => {
           <p className="font-body text-[14px] font-light text-text-muted-dark">+92 324 4244 914</p>
           <button
             onClick={openModal}
-            className="mt-2 text-left font-body text-[14px] font-medium text-wine hover:underline"
+            className="mt-2 text-left font-body text-[14px] font-medium text-wine underline hover:text-dutch-white transition-colors duration-200"
           >
             Get in touch →
           </button>

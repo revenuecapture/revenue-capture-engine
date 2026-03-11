@@ -33,7 +33,7 @@ const Framework = () => (
   <section id="framework" className="dark-section bg-midnight-green py-[140px] px-6 md:px-10">
     <div className="relative z-10 mx-auto max-w-[1280px]">
       <div className="mb-16 text-center">
-        <p className="mb-4 font-body text-[12px] font-normal uppercase tracking-[0.3em] text-text-muted-dark">
+        <p className="mb-4 font-body text-[14px] font-normal uppercase tracking-[0.3em] text-text-muted-dark">
           How We Work
         </p>
         <h2 className="font-heading font-black text-dutch-white" style={{ fontSize: "clamp(40px, 5vw, 72px)", lineHeight: 1 }}>
@@ -62,7 +62,7 @@ const Framework = () => (
                 <h3 className="mb-3 font-heading text-[36px] font-extrabold text-dutch-white leading-[1.1]">
                   {step.title}
                 </h3>
-                <p className="max-w-[540px] font-body text-[17px] font-light text-text-muted-dark leading-relaxed">
+                <p className="max-w-[540px] font-body text-[19px] font-light text-text-muted-dark leading-relaxed">
                   {step.desc}
                 </p>
               </div>

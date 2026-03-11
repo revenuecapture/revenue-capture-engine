@@ -5,9 +5,9 @@ const ease = [0.25, 0.46, 0.45, 0.94] as const;
 const clients = ["Beaconhouse Group", "StudyIn", "ASFE Consultants", "AMET Education", "PhatLoot Studios", "Verbaly"];
 
 const stats = [
-  { value: "NZ$840,994", label: "Raised on Kickstarter for PhatLoot Studios" },
+  { value: "NZ$ 840,994", label: "Raised on Kickstarter for PhatLoot Studios" },
   { value: "5x", label: "Return on Ad Spend for StudyIn / British Council" },
-  { value: "Rs. 50M+", label: "Annual media budgets managed" },
+  { value: "USD 50M+", label: "Annual media budgets managed" },
 ];
 
 const SocialProof = () => (
@@ -38,7 +38,7 @@ const SocialProof = () => (
             {clients.map((c) => (
               <div
                 key={c}
-                className="rounded-[4px] bg-text-primary-light/[0.08] px-5 py-2.5 text-center font-body text-[14px] font-medium uppercase tracking-[0.15em] text-text-primary-light"
+                className="rounded-[4px] bg-text-primary-light/[0.08] px-5 py-2.5 text-center font-body text-[15px] font-semibold uppercase tracking-[0.15em] text-text-primary-light"
               >
                 {c}
               </div>
@@ -55,7 +55,7 @@ const SocialProof = () => (
             <span className="absolute -top-4 -left-2 font-heading text-[120px] font-black leading-none text-wine/30 select-none">
               &ldquo;
             </span>
-            <blockquote className="pt-12 font-body text-[20px] font-light leading-relaxed text-text-primary-light">
+            <blockquote className="pt-12 font-body text-[20px] font-normal leading-relaxed text-text-primary-light">
               RevCap helped us go from just an idea to a sustainable business with consistent revenue. Their end-to-end approach meant I could focus on teaching while they handled the marketing and sales. They are true partners in growth.
             </blockquote>
             <p className="mt-6 font-heading text-[14px] font-semibold uppercase tracking-[0.2em] text-wine">

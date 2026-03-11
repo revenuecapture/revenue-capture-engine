@@ -29,7 +29,7 @@ const Audit = () => {
   return (
   <section id="services" className="bg-bg-light py-[140px] px-6 md:px-10">
     <div className="mx-auto max-w-[1280px]">
-      <p className="mb-4 font-body text-[12px] font-normal uppercase tracking-[0.3em] text-text-muted-light">
+      <p className="mb-4 font-body text-[14px] font-normal uppercase tracking-[0.3em] text-text-muted-light">
         Where It Begins
       </p>
       <h2
@@ -52,7 +52,7 @@ const Audit = () => {
             transition={{ duration: 0.7, delay: i * 0.12, ease }}
             className="group rounded-lg border border-dutch-white/[0.08] bg-midnight-green p-10 md:p-12 transition-all duration-300 hover:-translate-y-1.5 hover:border-dutch-white/25"
           >
-            <span className="font-heading text-[48px] font-black text-wine">{card.num}</span>
+            <span className="font-heading text-[48px] font-black text-dutch-white">{card.num}</span>
             <h3 className="mt-4 font-heading text-[24px] font-bold text-dutch-white">{card.title}</h3>
             <p className="mt-4 font-body text-[16px] font-light leading-relaxed text-text-muted-dark">
               {card.desc}

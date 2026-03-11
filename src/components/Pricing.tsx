@@ -86,7 +86,7 @@ const Pricing = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7, delay: i * 0.12, ease }}
-            className="flex flex-col rounded-lg p-10 md:p-12"
+            className="flex flex-col rounded-lg p-10 md:p-12 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_0_40px_rgba(239,223,187,0.06)]"
             style={{
               background: tier.featured ? "rgba(55, 93, 138, 0.25)" : "rgba(255,255,255,0.04)",
               border: tier.featured ? "1.5px solid var(--federal-blue)" : "1px solid rgba(239,223,187,0.1)",
@@ -105,7 +105,7 @@ const Pricing = () => {
               <span className="text-[20px] font-normal text-text-muted-dark">{tier.period}</span>
             </p>
             {tier.revShare && (
-              <p className="mt-1 font-body text-[14px] font-light text-wine">{tier.revShareText}</p>
+              <p className="mt-2 font-body text-[16px] font-semibold text-dutch-white/80">{tier.revShareText}</p>
             )}
             <div className="my-6 h-px bg-dutch-white/10" />
             <p className="font-body text-[15px] font-light italic text-text-muted-dark">
