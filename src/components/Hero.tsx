@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { useModal } from "../context/ModalContext";
 
 const ease = [0.25, 0.46, 0.45, 0.94] as const;
@@ -7,90 +7,150 @@ const ease = [0.25, 0.46, 0.45, 0.94] as const;
 const Hero = () => {
   const [showScroll, setShowScroll] = useState(true);
   const { openModal } = useModal();
+  const sectionRef = useRef<HTMLElement>(null);
+
+  // Parallax: track window scroll against this section
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
+  // Orb layer moves slower than content (parallax depth)
+  const orbY = useTransform(scrollYProgress, [0, 1], ["0%", "35%"]);
+  // Content fades and lifts as user scrolls away
+  const contentY = useTransform(scrollYProgress, [0, 0.7], ["0%", "20%"]);
+  const contentOpacity = useTransform(scrollYProgress, [0, 0.55], [1, 0]);
 
   useEffect(() => {
-    const onScroll = () => setShowScroll(window.scrollY < 100);
-    window.addEventListener("scroll", onScroll);
+    const onScroll = () => setShowScroll(window.scrollY < 80);
+    window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   return (
     <section
-      className="dark-section relative flex h-svh items-center justify-center overflow-hidden"
-      style={{
-        background: `
-          radial-gradient(ellipse at 60% 40%, rgba(115,47,55,0.2), transparent 55%),
-          radial-gradient(ellipse at 10% 80%, rgba(55,93,138,0.18), transparent 50%),
-          radial-gradient(ellipse at 85% 85%, rgba(9,82,86,0.25), transparent 45%),
-          var(--midnight-green)
-        `,
-      }}
+      ref={sectionRef}
+      className="relative flex h-svh min-h-[600px] items-center justify-center overflow-hidden"
+      style={{ background: "var(--midnight-green)" }}
     >
-      <div className="relative z-10 text-center px-6">
+      {/* ── Parallax orb layer ── */}
+      <motion.div
+        className="pointer-events-none absolute inset-0"
+        style={{ y: orbY }}
+        aria-hidden
+      >
+        {/* Wine orb — top right */}
+        <div
+          className="orb orb-a"
+          style={{
+            top: "5%", right: "5%",
+            width: "min(55vw, 640px)", height: "min(55vw, 640px)",
+            background: "radial-gradient(circle, rgba(115,47,55,0.50) 0%, transparent 70%)",
+            filter: "blur(clamp(50px, 6vw, 90px))",
+          }}
+        />
+        {/* Federal blue orb — bottom left */}
+        <div
+          className="orb orb-b"
+          style={{
+            bottom: "0%", left: "0%",
+            width: "min(60vw, 700px)", height: "min(60vw, 700px)",
+            background: "radial-gradient(circle, rgba(55,93,138,0.42) 0%, transparent 70%)",
+            filter: "blur(clamp(55px, 7vw, 100px))",
+            animationDelay: "2s",
+          }}
+        />
+        {/* Teal orb — center */}
+        <div
+          className="orb orb-a"
+          style={{
+            top: "35%", left: "35%",
+            width: "min(40vw, 480px)", height: "min(40vw, 480px)",
+            background: "radial-gradient(circle, rgba(9,82,86,0.38) 0%, transparent 70%)",
+            filter: "blur(clamp(40px, 5vw, 75px))",
+            animationDelay: "5s",
+          }}
+        />
+      </motion.div>
+
+      {/* ── Hero content ── */}
+      <motion.div
+        className="relative z-10 mx-auto max-w-[900px] px-6 text-center"
+        style={{ y: contentY, opacity: contentOpacity }}
+      >
         <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.6, ease }}
-          className="mb-6 font-body text-[12px] font-normal uppercase tracking-[0.35em] text-text-muted-dark"
+          initial={{ opacity: 0, y: 20, letterSpacing: "0.6em" }}
+          animate={{ opacity: 1, y: 0, letterSpacing: "0.35em" }}
+          transition={{ delay: 0.2, duration: 0.9, ease }}
+          className="mb-6 font-body text-[13px] font-normal uppercase text-text-muted-dark"
+          style={{ letterSpacing: "0.35em" }}
         >
           Revenue Capture Agency
         </motion.p>
 
-        <h1 className="font-heading font-black leading-[0.92] text-dutch-white" style={{ fontSize: "clamp(72px, 10vw, 130px)" }}>
-          {["Revenue.", "Captured."].map((word, i) => (
+        <h1
+          className="font-heading font-black leading-[0.92]"
+          style={{ fontSize: "clamp(64px, 10vw, 130px)" }}
+        >
+          {(["Revenue.", "Captured."] as const).map((word, i) => (
             <motion.span
               key={word}
               className="block"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.35 + i * 0.12, duration: 0.7, ease }}
+              initial={{ opacity: 0, y: 70, skewX: -5 }}
+              animate={{ opacity: 1, y: 0, skewX: 0 }}
+              transition={{ delay: 0.38 + i * 0.15, duration: 0.85, ease }}
             >
-              {word === "Captured." ? (
-                <>Captured<span className="text-wine">.</span></>
+              {i === 0 ? (
+                <span className="gradient-text-light">Revenue.</span>
               ) : (
-                word
+                <span className="gradient-text-wine">
+                  Captured<span style={{ WebkitTextFillColor: "var(--wine)" }}>.</span>
+                </span>
               )}
             </motion.span>
           ))}
         </h1>
 
         <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.7, duration: 0.7, ease }}
-          className="mx-auto mt-8 max-w-[560px] font-body text-[clamp(17px,2vw,22px)] font-light leading-relaxed text-text-muted-dark"
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.78, duration: 0.85, ease }}
+          className="mx-auto mt-8 max-w-[540px] font-body font-light leading-relaxed text-text-muted-dark"
+          style={{ fontSize: "clamp(18px, 2.2vw, 22px)" }}
         >
           We build, market, and convert. Turning your vision into a profitable reality.
         </motion.p>
 
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.0, duration: 0.6, ease }}
+          transition={{ delay: 1.05, duration: 0.7, ease }}
           className="mt-10 flex flex-wrap items-center justify-center gap-4"
         >
           <button
             onClick={openModal}
-            className="rounded-[4px] bg-wine px-8 py-3.5 font-heading text-[15px] font-semibold text-dutch-white transition-colors duration-200 hover:bg-accent-hover"
+            className="btn-primary px-9 py-[14px] text-[15px]"
           >
             Get Your Free Audit
           </button>
-          <a
-            href="#work"
-            className="rounded-[4px] border-[1.5px] border-dutch-white/40 px-8 py-3.5 font-heading text-[15px] font-medium text-dutch-white transition-colors duration-200 hover:border-dutch-white"
-          >
+          <a href="#work" className="btn-ghost px-9 py-[14px] text-[15px]">
             See Our Work
           </a>
         </motion.div>
-      </div>
+      </motion.div>
 
-      {/* Scroll indicator */}
+      {/* ── Scroll indicator ── */}
       <div
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 transition-opacity duration-500"
+        className="pointer-events-none absolute bottom-10 left-1/2 z-10 transition-opacity duration-500"
         style={{ opacity: showScroll ? 1 : 0 }}
       >
-        <div className="relative h-10 w-[2px] bg-dutch-white/30">
-          <div className="scroll-dot-anim absolute left-1/2 top-0 h-2 w-2 -translate-x-1/2 rounded-full bg-dutch-white/60" />
+        <div className="relative h-11 w-[2px] bg-dutch-white/25">
+          <div
+            className="scroll-dot-anim absolute left-1/2 top-0 h-[10px] w-[10px] rounded-full"
+            style={{
+              background: "radial-gradient(circle, rgba(239,223,187,0.9), rgba(239,223,187,0.3))",
+              boxShadow: "0 0 8px rgba(239,223,187,0.4)",
+            }}
+          />
         </div>
       </div>
     </section>

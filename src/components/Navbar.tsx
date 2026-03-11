@@ -3,11 +3,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useModal } from "../context/ModalContext";
 
 const navLinks = [
-  { label: "About", href: "#about" },
+  { label: "About",     href: "#about" },
   { label: "Framework", href: "#framework" },
-  { label: "Services", href: "#services" },
-  { label: "Work", href: "#work" },
-  { label: "Pricing", href: "#pricing" },
+  { label: "Services",  href: "#services" },
+  { label: "Work",      href: "#work" },
+  { label: "Pricing",   href: "#pricing" },
 ];
 
 const Navbar = () => {
@@ -17,72 +17,77 @@ const Navbar = () => {
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 80);
-    window.addEventListener("scroll", onScroll);
+    window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   return (
     <>
+      {/*
+        Outer nav: always fixed, full-width, zero height visually.
+        Inner div: morphs from full-bleed bar → centered pill.
+        This avoids Framer Motion fighting with layout properties.
+      */}
       <nav
         className="fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-out"
-        style={
-          scrolled
-            ? {
-                margin: "12px 16px 0",
-                borderRadius: "12px",
-                background: "rgba(7, 55, 58, 0.55)",
-                backdropFilter: "blur(24px) saturate(180%)",
-                WebkitBackdropFilter: "blur(24px) saturate(180%)",
-                border: "1px solid rgba(239, 223, 187, 0.13)",
-                boxShadow: "0 8px 32px rgba(0,0,0,0.28), inset 0 1px 0 rgba(239,223,187,0.08)",
-              }
-            : {
-                margin: "0",
-                borderRadius: "0",
-                background: "transparent",
-                backdropFilter: "none",
-                border: "1px solid transparent",
-                boxShadow: "none",
-              }
-        }
+        style={{ padding: scrolled ? "10px 20px 0" : "0" }}
       >
-        <div className="mx-auto flex h-[64px] max-w-[1280px] items-center justify-between px-6 md:px-8">
-          <a
-            href="#"
-            className="font-heading text-[22px] font-bold text-dutch-white"
-            style={{ letterSpacing: "-0.03em" }}
-          >
-            revCap
-          </a>
+        <div
+          className="mx-auto transition-all duration-500 ease-out"
+          style={{
+            maxWidth: scrolled ? "820px" : "100%",
+            borderRadius: scrolled ? "12px" : "0px",
+            background: scrolled
+              ? "rgba(7, 55, 58, 0.52)"
+              : "transparent",
+            backdropFilter: scrolled ? "blur(28px) saturate(190%)" : "none",
+            WebkitBackdropFilter: scrolled ? "blur(28px) saturate(190%)" : "none",
+            border: scrolled
+              ? "1px solid rgba(239, 223, 187, 0.14)"
+              : "1px solid transparent",
+            boxShadow: scrolled
+              ? "0 8px 40px rgba(0,0,0,0.30), inset 0 1px 0 rgba(239,223,187,0.09)"
+              : "none",
+          }}
+        >
+          <div className="flex h-[60px] items-center justify-between px-7 md:px-8">
+            <a
+              href="#"
+              className="font-heading text-[22px] font-bold text-dutch-white"
+              style={{ letterSpacing: "-0.03em" }}
+            >
+              revCap
+            </a>
 
-          <div className="hidden items-center gap-8 md:flex">
-            {navLinks.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                className="font-body text-[15px] font-normal text-text-muted-dark transition-colors duration-200 hover:text-dutch-white"
-              >
-                {link.label}
-              </a>
-            ))}
+            <div className="hidden items-center gap-7 md:flex">
+              {navLinks.map((link) => (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  className="font-body text-[15px] font-normal text-text-muted-dark transition-colors duration-200 hover:text-dutch-white"
+                >
+                  {link.label}
+                </a>
+              ))}
+            </div>
+
+            <button
+              onClick={openModal}
+              className="btn-primary hidden px-5 py-[9px] text-[14px] md:inline-flex"
+            >
+              Get Your Audit
+            </button>
+
+            <button
+              className="flex flex-col gap-[5px] md:hidden"
+              onClick={() => setMenuOpen(true)}
+              aria-label="Open menu"
+            >
+              <span className="block h-[2px] w-6 bg-dutch-white" />
+              <span className="block h-[2px] w-6 bg-dutch-white" />
+              <span className="block h-[2px] w-6 bg-dutch-white" />
+            </button>
           </div>
-
-          <button
-            onClick={openModal}
-            className="hidden rounded-[4px] bg-wine px-6 py-2.5 font-heading text-[14px] font-semibold text-dutch-white transition-colors duration-200 hover:bg-accent-hover md:block"
-          >
-            Get Your Audit
-          </button>
-
-          <button
-            className="flex flex-col gap-[5px] md:hidden"
-            onClick={() => setMenuOpen(true)}
-            aria-label="Open menu"
-          >
-            <span className="block h-[2px] w-6 bg-dutch-white" />
-            <span className="block h-[2px] w-6 bg-dutch-white" />
-            <span className="block h-[2px] w-6 bg-dutch-white" />
-          </button>
         </div>
       </nav>
 
@@ -92,7 +97,9 @@ const Navbar = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[60] flex flex-col items-center justify-center bg-midnight-green"
+            transition={{ duration: 0.25 }}
+            className="fixed inset-0 z-[60] flex flex-col items-center justify-center"
+            style={{ background: "var(--midnight-green)" }}
           >
             <button
               className="absolute top-6 right-6 font-heading text-2xl text-dutch-white"
@@ -102,22 +109,28 @@ const Navbar = () => {
               ✕
             </button>
             <div className="flex flex-col items-center gap-8">
-              {navLinks.map((link) => (
-                <a
+              {navLinks.map((link, i) => (
+                <motion.a
                   key={link.label}
                   href={link.href}
                   onClick={() => setMenuOpen(false)}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.06, duration: 0.35 }}
                   className="font-heading text-[32px] font-bold text-dutch-white"
                 >
                   {link.label}
-                </a>
+                </motion.a>
               ))}
-              <button
+              <motion.button
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.35, duration: 0.35 }}
                 onClick={() => { setMenuOpen(false); openModal(); }}
-                className="mt-4 rounded-[4px] bg-wine px-8 py-3 font-heading text-[15px] font-semibold text-dutch-white"
+                className="btn-primary mt-4 px-8 py-3 text-[15px]"
               >
                 Get Your Audit
-              </button>
+              </motion.button>
             </div>
           </motion.div>
         )}

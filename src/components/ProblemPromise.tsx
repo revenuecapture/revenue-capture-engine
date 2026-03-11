@@ -5,49 +5,78 @@ const ease = [0.25, 0.46, 0.45, 0.94] as const;
 const ProblemPromise = () => (
   <section
     id="about"
-    className="relative overflow-hidden py-[120px] px-6 md:px-10"
-    style={{
-      background: `
-        radial-gradient(ellipse at 100% 50%, rgba(55,93,138,0.12), transparent 60%),
-        var(--bg-light)
-      `,
-    }}
+    className="relative overflow-hidden py-[130px] px-6 md:px-12"
+    style={{ background: "var(--bg-light)" }}
   >
-    <div className="mx-auto max-w-[1280px]">
-      <div className="grid grid-cols-1 gap-16 md:grid-cols-2 md:gap-24">
+    {/* Orbs */}
+    <div className="orb orb-b pointer-events-none absolute"
+      style={{
+        top: "-10%", right: "-5%",
+        width: "min(55vw, 650px)", height: "min(55vw, 650px)",
+        background: "radial-gradient(circle, rgba(55,93,138,0.2) 0%, transparent 70%)",
+        filter: "blur(clamp(55px,7vw,100px))",
+      }}
+    />
+    <div className="orb orb-a pointer-events-none absolute"
+      style={{
+        bottom: "-10%", left: "-5%",
+        width: "min(45vw, 540px)", height: "min(45vw, 540px)",
+        background: "radial-gradient(circle, rgba(115,47,55,0.18) 0%, transparent 70%)",
+        filter: "blur(clamp(50px,6vw,90px))",
+        animationDelay: "3s",
+      }}
+    />
 
-        {/* Divider line — desktop only */}
-        <div className="absolute left-1/2 top-[15%] hidden h-[70%] w-px bg-text-primary-light/10 md:block" />
+    <div className="relative z-10 mx-auto max-w-[1240px]">
+      <div className="grid grid-cols-1 gap-16 md:grid-cols-2 md:gap-28">
+
+        {/* Vertical divider line — desktop */}
+        <div className="pointer-events-none absolute left-1/2 top-[5%] hidden h-[90%] w-px md:block"
+          style={{ background: "linear-gradient(to bottom, transparent, rgba(7,55,58,0.12) 25%, rgba(7,55,58,0.12) 75%, transparent)" }}
+        />
 
         <motion.div
-          initial={{ opacity: 0, x: -50 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.8, ease }}
+          initial={{ opacity: 0, x: -100, rotate: -2 }}
+          whileInView={{ opacity: 1, x: 0, rotate: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.9, ease }}
         >
-          <p className="mb-4 font-body text-[11px] font-normal uppercase tracking-[0.3em] text-text-muted-light">
+          <p className="mb-5 font-body text-[12px] font-normal uppercase tracking-[0.3em] text-text-muted-light">
             The Problem
           </p>
-          <p className="font-body text-[18px] font-light leading-relaxed text-text-primary-light">
+          <p className="font-body font-light leading-relaxed text-text-primary-light" style={{ fontSize: "clamp(18px, 2vw, 21px)" }}>
             Fragmented marketing efforts lead to wasted resources. Businesses often have a brand but no system to capture revenue. Or a sales team with no leads to convert.
           </p>
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, x: 50 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.8, ease }}
+          initial={{ opacity: 0, x: 100, rotate: 2 }}
+          whileInView={{ opacity: 1, x: 0, rotate: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.9, ease }}
         >
-          <p className="mb-4 font-body text-[11px] font-normal uppercase tracking-[0.3em] text-text-muted-light">
+          <p className="mb-5 font-body text-[12px] font-normal uppercase tracking-[0.3em] text-text-muted-light">
             The Promise
           </p>
-          <p className="font-body text-[18px] font-light leading-relaxed text-text-primary-light">
+          <p className="font-body font-light leading-relaxed text-text-primary-light" style={{ fontSize: "clamp(18px, 2vw, 21px)" }}>
             revCap is an end-to-end, done-for-you Revenue Capture system. We build, market, and convert. Closing the gap between marketing spend and actual money.
           </p>
-          <p className="mt-6 font-heading text-[20px] font-bold text-wine">
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0.3, ease }}
+            className="mt-7 font-heading font-bold"
+            style={{
+              fontSize: "clamp(20px, 2.2vw, 24px)",
+              background: "linear-gradient(135deg, var(--wine) 0%, #b04952 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+            }}
+          >
             We are the only agency with skin in the game.
-          </p>
+          </motion.p>
         </motion.div>
 
       </div>

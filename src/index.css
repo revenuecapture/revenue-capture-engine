@@ -2,33 +2,26 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ─── Design Tokens ─── */
 :root {
   --midnight-green: #095256;
   --dutch-white: #efdfbb;
   --wine: #732f37;
   --federal-blue: #375d8a;
-
   --bg-dark: #07373a;
   --bg-light: #f5edd8;
   --text-primary-dark: #efdfbb;
-  --text-muted-dark: rgba(239, 223, 187, 0.55);
+  --text-muted-dark: rgba(239, 223, 187, 0.58);
   --text-primary-light: #07373a;
-  --text-muted-light: rgba(7, 55, 58, 0.55);
+  --text-muted-light: rgba(7, 55, 58, 0.58);
   --accent: #732f37;
   --accent-hover: #8c3942;
   --footer-bg: #04272a;
 }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
+/* ─── Base Reset ─── */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
 body {
   font-family: 'DM Sans', sans-serif;
   font-weight: 300;
@@ -36,43 +29,199 @@ body {
   color: var(--text-primary-dark);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
+h1, h2, h3, h4, h5, .stat-number { font-family: 'League Spartan', sans-serif; }
+.font-heading { font-family: 'League Spartan', sans-serif; }
+.font-body { font-family: 'DM Sans', sans-serif; }
 
-h1, h2, h3, h4, h5, .stat-number {
-  font-family: 'League Spartan', sans-serif;
-}
-
-.dark-section {
-  position: relative;
-}
-
-.dark-section::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 0;
-}
-
-.dark-section > * {
-  position: relative;
-  z-index: 1;
-}
-
-.font-heading {
-  font-family: 'League Spartan', sans-serif;
-}
-
-.font-body {
-  font-family: 'DM Sans', sans-serif;
-}
-
+/* ─── Scroll indicator ─── */
 @keyframes scroll-dot {
-  0%, 100% { transform: translateY(0); opacity: 0.3; }
-  50% { transform: translateY(20px); opacity: 0.8; }
+  0%, 100% { transform: translateX(-50%) translateY(0); opacity: 0.3; }
+  50%       { transform: translateX(-50%) translateY(18px); opacity: 0.8; }
+}
+.scroll-dot-anim { animation: scroll-dot 1.6s ease-in-out infinite; }
+
+/* ─── Floating Orbs (CSS-only, vector, no pixelation) ─── */
+@keyframes orb-drift-a {
+  0%   { transform: translate(0, 0) scale(1); }
+  33%  { transform: translate(3vw, -2.5vh) scale(1.06); }
+  66%  { transform: translate(-1.5vw, 3vh) scale(0.96); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+@keyframes orb-drift-b {
+  0%   { transform: translate(0, 0) scale(1); }
+  40%  { transform: translate(-3.5vw, 2vh) scale(1.1); }
+  80%  { transform: translate(2vw, -1.5vh) scale(0.94); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+.orb { position: absolute; pointer-events: none; border-radius: 50%; }
+.orb-a { animation: orb-drift-a 16s ease-in-out infinite; }
+.orb-b { animation: orb-drift-b 20s ease-in-out infinite; }
+
+/* ─── Gradient Text Utilities ─── */
+.gradient-text-light {
+  background: linear-gradient(135deg, var(--dutch-white) 0%, rgba(239,223,187,0.72) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.gradient-text-wine {
+  background: linear-gradient(135deg, var(--dutch-white) 20%, var(--wine) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-.scroll-dot-anim {
-  animation: scroll-dot 1.5s ease-in-out infinite;
+/* ─── BUTTON SYSTEM — Liquid Glass ─── */
+
+/* Primary: Wine → Glass on hover */
+.btn-primary {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--wine);
+  color: var(--dutch-white);
+  border: 1px solid rgba(239, 223, 187, 0.1);
+  border-radius: 6px;
+  font-family: 'League Spartan', sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background 0.4s ease,
+    border-color 0.4s ease,
+    box-shadow 0.4s ease,
+    transform 0.25s ease,
+    backdrop-filter 0.4s ease,
+    color 0.3s ease;
+}
+.btn-primary:hover {
+  background: rgba(115, 47, 55, 0.38);
+  backdrop-filter: blur(22px) saturate(200%);
+  -webkit-backdrop-filter: blur(22px) saturate(200%);
+  border-color: rgba(239, 223, 187, 0.28);
+  box-shadow:
+    0 8px 32px rgba(115, 47, 55, 0.4),
+    0 2px 8px rgba(0,0,0,0.2),
+    inset 0 1px 0 rgba(239, 223, 187, 0.18);
+  transform: translateY(-2px);
+  color: var(--dutch-white);
+}
+.btn-primary:active { transform: translateY(0px); }
+
+/* Outline: Ghost → Glass on hover */
+.btn-ghost {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: var(--dutch-white);
+  border: 1.5px solid rgba(239, 223, 187, 0.35);
+  border-radius: 6px;
+  font-family: 'League Spartan', sans-serif;
+  font-weight: 500;
+  font-size: 15px;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background 0.4s ease,
+    border-color 0.4s ease,
+    box-shadow 0.4s ease,
+    transform 0.25s ease,
+    backdrop-filter 0.4s ease;
+}
+.btn-ghost:hover {
+  background: rgba(239, 223, 187, 0.08);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border-color: rgba(239, 223, 187, 0.7);
+  box-shadow:
+    0 6px 24px rgba(0,0,0,0.2),
+    inset 0 1px 0 rgba(239, 223, 187, 0.12);
+  transform: translateY(-2px);
+}
+.btn-ghost:active { transform: translateY(0px); }
+
+/* Inverted: Dutch White bg → Glass on hover (for wine section) */
+.btn-inverted {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--dutch-white);
+  color: var(--wine);
+  border: 1px solid rgba(115, 47, 55, 0.15);
+  border-radius: 6px;
+  font-family: 'League Spartan', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background 0.4s ease,
+    border-color 0.4s ease,
+    box-shadow 0.4s ease,
+    transform 0.25s ease,
+    backdrop-filter 0.4s ease;
+}
+.btn-inverted:hover {
+  background: rgba(239, 223, 187, 0.45);
+  backdrop-filter: blur(22px) saturate(180%);
+  -webkit-backdrop-filter: blur(22px) saturate(180%);
+  border-color: rgba(239, 223, 187, 0.6);
+  box-shadow:
+    0 8px 32px rgba(0,0,0,0.3),
+    inset 0 1px 0 rgba(255,255,255,0.5);
+  transform: translateY(-2px);
+}
+.btn-inverted:active { transform: translateY(0px); }
+
+/* Pricing outline (on dark) */
+.btn-tier-ghost {
+  display: block;
+  width: 100%;
+  text-align: center;
+  background: transparent;
+  color: var(--dutch-white);
+  border: 1.5px solid rgba(239, 223, 187, 0.22);
+  border-radius: 6px;
+  font-family: 'League Spartan', sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition:
+    background 0.4s ease,
+    border-color 0.4s ease,
+    box-shadow 0.4s ease,
+    transform 0.25s ease,
+    backdrop-filter 0.4s ease;
+}
+.btn-tier-ghost:hover {
+  background: rgba(239, 223, 187, 0.07);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border-color: rgba(239, 223, 187, 0.55);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.18), inset 0 1px 0 rgba(239,223,187,0.1);
+  transform: translateY(-1px);
+}
+
+/* ─── Pricing featured animated border ─── */
+@keyframes border-spin {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.pricing-featured-wrap {
+  background: linear-gradient(135deg, var(--federal-blue), var(--wine), rgba(239,223,187,0.8), var(--federal-blue));
+  background-size: 300% 300%;
+  animation: border-spin 5s ease infinite;
+  padding: 1.5px;
+  border-radius: 11px;
 }
