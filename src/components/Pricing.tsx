@@ -1,4 +1,5 @@
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
 import { useModal } from "../context/ModalContext";
 
 const ease = [0.25, 0.46, 0.45, 0.94] as const;
@@ -114,30 +115,40 @@ const TierBody = ({ tier, openModal, featured }: { tier: Tier; openModal: () => 
 
 const Pricing = () => {
   const { openModal } = useModal();
+  const sectionRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start end", "end start"] });
+  const orbY = useTransform(scrollYProgress, [0, 1], ["20%", "-20%"]);
+  const orbY2 = useTransform(scrollYProgress, [0, 1], ["-18%", "18%"]);
+
   return (
     <section
+      ref={sectionRef}
       id="pricing"
       className="relative overflow-hidden py-[140px] px-6 md:px-12"
       style={{ background: "var(--midnight-green)" }}
     >
       {/* Orbs */}
-      <div className="orb orb-b pointer-events-none absolute"
-        style={{
-          bottom: "-15%", left: "50%", transform: "translateX(-50%)",
-          width: "min(80vw, 950px)", height: "min(40vw, 480px)",
-          background: "radial-gradient(ellipse, rgba(55,93,138,0.34) 0%, transparent 70%)",
-          filter: "blur(clamp(65px,9vw,120px))",
-        }}
-      />
-      <div className="orb orb-a pointer-events-none absolute"
-        style={{
-          top: "-5%", left: "-5%",
-          width: "min(45vw, 540px)", height: "min(45vw, 540px)",
-          background: "radial-gradient(circle, rgba(115,47,55,0.24) 0%, transparent 70%)",
-          filter: "blur(clamp(55px,7vw,100px))",
-          animationDelay: "6s",
-        }}
-      />
+      <motion.div className="pointer-events-none absolute inset-0" style={{ y: orbY }} aria-hidden>
+        <div className="orb orb-b absolute"
+          style={{
+            bottom: "-15%", left: "50%", transform: "translateX(-50%)",
+            width: "min(85vw, 1000px)", height: "min(45vw, 520px)",
+            background: "radial-gradient(ellipse, rgba(55,93,138,0.42) 0%, transparent 70%)",
+            filter: "blur(clamp(65px,9vw,120px))",
+          }}
+        />
+      </motion.div>
+      <motion.div className="pointer-events-none absolute inset-0" style={{ y: orbY2 }} aria-hidden>
+        <div className="orb orb-a absolute"
+          style={{
+            top: "-5%", left: "-5%",
+            width: "min(50vw, 580px)", height: "min(50vw, 580px)",
+            background: "radial-gradient(circle, rgba(115,47,55,0.32) 0%, transparent 70%)",
+            filter: "blur(clamp(55px,7vw,100px))",
+            animationDelay: "6s",
+          }}
+        />
+      </motion.div>
 
       <div className="relative z-10 mx-auto max-w-[1100px]">
         <motion.div

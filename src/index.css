@@ -225,3 +225,13 @@ h1, h2, h3, h4, h5, .stat-number { font-family: 'League Spartan', sans-serif; }
   padding: 1.5px;
   border-radius: 11px;
 }
+
+/* ─── Ambient spinning gradient — background atmosphere ─── */
+.ambient-spin-grad {
+  position: absolute;
+  pointer-events: none;
+  background: linear-gradient(135deg, rgba(55,93,138,0.55), rgba(115,47,55,0.45), rgba(239,223,187,0.18), rgba(13,112,119,0.4), rgba(55,93,138,0.55));
+  background-size: 400% 400%;
+  animation: border-spin 8s ease infinite;
+  border-radius: 50%;
+}

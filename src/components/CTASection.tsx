@@ -19,6 +19,18 @@ const CTASection = () => {
       className="relative overflow-hidden py-[160px] px-6 md:px-12"
       style={{ background: "var(--wine)" }}
     >
+      {/* Ambient spinning gradient — subtle mid-layer */}
+      <div
+        className="ambient-spin-grad pointer-events-none"
+        style={{
+          top: "50%", left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: "min(90vw, 1000px)", height: "min(60vw, 600px)",
+          filter: "blur(clamp(90px,13vw,170px))",
+          opacity: 0.14,
+        }}
+      />
+
       {/* Parallax orbs */}
       <motion.div className="pointer-events-none absolute inset-0" style={{ x: orbX }} aria-hidden>
         <div className="orb orb-a absolute"

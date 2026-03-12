@@ -1,4 +1,5 @@
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
 
 const ease = [0.25, 0.46, 0.45, 0.94] as const;
 
@@ -41,30 +42,41 @@ const steps = [
   },
 ];
 
-const Framework = () => (
+const Framework = () => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start end", "end start"] });
+  const orbY = useTransform(scrollYProgress, [0, 1], ["-22%", "22%"]);
+  const orbY2 = useTransform(scrollYProgress, [0, 1], ["18%", "-18%"]);
+
+  return (
   <section
+    ref={sectionRef}
     id="framework"
     className="relative overflow-hidden py-[140px] px-6 md:px-12"
     style={{ background: "var(--midnight-green)" }}
   >
     {/* Background orbs */}
-    <div className="orb orb-a pointer-events-none absolute"
-      style={{
-        top: "-5%", left: "-8%",
-        width: "min(60vw, 720px)", height: "min(60vw, 720px)",
-        background: "radial-gradient(circle, rgba(55,93,138,0.3) 0%, transparent 70%)",
-        filter: "blur(clamp(60px,8vw,110px))",
-      }}
-    />
-    <div className="orb orb-b pointer-events-none absolute"
-      style={{
-        bottom: "-5%", right: "-5%",
-        width: "min(50vw, 600px)", height: "min(50vw, 600px)",
-        background: "radial-gradient(circle, rgba(115,47,55,0.28) 0%, transparent 70%)",
-        filter: "blur(clamp(55px,7vw,100px))",
-        animationDelay: "3s",
-      }}
-    />
+    <motion.div className="pointer-events-none absolute inset-0" style={{ y: orbY }} aria-hidden>
+      <div className="orb orb-a absolute"
+        style={{
+          top: "-5%", left: "-8%",
+          width: "min(65vw, 780px)", height: "min(65vw, 780px)",
+          background: "radial-gradient(circle, rgba(55,93,138,0.38) 0%, transparent 70%)",
+          filter: "blur(clamp(60px,8vw,110px))",
+        }}
+      />
+    </motion.div>
+    <motion.div className="pointer-events-none absolute inset-0" style={{ y: orbY2 }} aria-hidden>
+      <div className="orb orb-b absolute"
+        style={{
+          bottom: "-5%", right: "-5%",
+          width: "min(55vw, 650px)", height: "min(55vw, 650px)",
+          background: "radial-gradient(circle, rgba(115,47,55,0.36) 0%, transparent 70%)",
+          filter: "blur(clamp(55px,7vw,100px))",
+          animationDelay: "3s",
+        }}
+      />
+    </motion.div>
 
     <div className="relative z-10 mx-auto max-w-[1240px]">
       <motion.div
@@ -135,6 +147,7 @@ const Framework = () => (
       </div>
     </div>
   </section>
-);
+  );
+};
 
 export default Framework;

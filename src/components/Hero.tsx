@@ -15,7 +15,7 @@ const Hero = () => {
     offset: ["start start", "end start"],
   });
   // Orb layer moves slower than content (parallax depth)
-  const orbY = useTransform(scrollYProgress, [0, 1], ["0%", "35%"]);
+  const orbY = useTransform(scrollYProgress, [0, 1], ["0%", "60%"]);
   // Content fades and lifts as user scrolls away
   const contentY = useTransform(scrollYProgress, [0, 0.7], ["0%", "20%"]);
   const contentOpacity = useTransform(scrollYProgress, [0, 0.55], [1, 0]);
@@ -44,7 +44,7 @@ const Hero = () => {
           style={{
             top: "5%", right: "5%",
             width: "min(55vw, 640px)", height: "min(55vw, 640px)",
-            background: "radial-gradient(circle, rgba(115,47,55,0.50) 0%, transparent 70%)",
+            background: "radial-gradient(circle, rgba(115,47,55,0.62) 0%, transparent 70%)",
             filter: "blur(clamp(50px, 6vw, 90px))",
           }}
         />
@@ -54,7 +54,7 @@ const Hero = () => {
           style={{
             bottom: "0%", left: "0%",
             width: "min(60vw, 700px)", height: "min(60vw, 700px)",
-            background: "radial-gradient(circle, rgba(55,93,138,0.42) 0%, transparent 70%)",
+            background: "radial-gradient(circle, rgba(55,93,138,0.54) 0%, transparent 70%)",
             filter: "blur(clamp(55px, 7vw, 100px))",
             animationDelay: "2s",
           }}
@@ -71,6 +71,17 @@ const Hero = () => {
           }}
         />
       </motion.div>
+
+      {/* ── Ambient spinning gradient — very subtle atmospheric layer ── */}
+      <div
+        className="ambient-spin-grad pointer-events-none"
+        style={{
+          bottom: "-30%", left: "10%",
+          width: "min(80vw, 900px)", height: "min(50vw, 500px)",
+          filter: "blur(clamp(80px,12vw,160px))",
+          opacity: 0.18,
+        }}
+      />
 
       {/* ── Hero content ── */}
       <motion.div

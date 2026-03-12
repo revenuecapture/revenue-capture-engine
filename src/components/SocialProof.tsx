@@ -114,14 +114,15 @@ const SocialProof = () => (
       className="relative overflow-hidden py-[90px] px-6 md:px-12"
       style={{ background: "var(--midnight-green)" }}
     >
-      {/* Center orb behind stats */}
-      <div className="orb orb-a pointer-events-none absolute"
+      {/* Ambient spinning gradient behind stats */}
+      <div
+        className="ambient-spin-grad pointer-events-none"
         style={{
           top: "50%", left: "50%",
           transform: "translate(-50%, -50%)",
-          width: "min(80vw, 900px)", height: "min(40vw, 400px)",
-          background: "radial-gradient(ellipse, rgba(55,93,138,0.32) 0%, transparent 70%)",
-          filter: "blur(clamp(60px,8vw,110px))",
+          width: "min(100vw, 1100px)", height: "min(55vw, 450px)",
+          filter: "blur(clamp(70px,10vw,130px))",
+          opacity: 0.22,
         }}
       />
 
