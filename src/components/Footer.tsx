@@ -48,8 +48,8 @@ const Footer = () => {
 
           {/* Contact */}
           <div className="flex flex-col gap-3">
-            <p className="font-body text-[15px] font-light text-text-muted-dark">revenuecapture@gmail.com</p>
-            <p className="font-body text-[15px] font-light text-text-muted-dark">+92 324 4244 914</p>
+            <p className="font-body text-[15px] font-light text-text-muted-dark">sarmad@revcap.xyz</p>
+            <p className="font-body text-[15px] font-light text-text-muted-dark">badr@revcap.xyz</p>
             <button
               onClick={openModal}
               className="mt-1 text-left font-body text-[15px] font-medium transition-colors duration-200 hover:opacity-80"
