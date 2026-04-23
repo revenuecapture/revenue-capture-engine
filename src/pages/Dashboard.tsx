@@ -1,3 +1,4 @@
+import { PasswordGate } from '@/components/dashboard/PasswordGate'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useDashboard } from '@/hooks/useDashboard'
 import { useConversionCelebration } from '@/hooks/useConversionCelebration'
@@ -38,6 +39,7 @@ export default function Dashboard() {
   }
 
   return (
+    <PasswordGate>
     <div className="min-h-screen bg-midnight-green text-dutch-white relative overflow-x-hidden">
 
       {/* Ambient orbs */}
@@ -121,5 +123,6 @@ export default function Dashboard() {
         </Tabs>
       </div>
     </div>
+    </PasswordGate>
   )
 }
