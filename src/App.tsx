@@ -1,39 +1,24 @@
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
-import Dashboard from "./pages/Dashboard";
-import NotFound from "./pages/NotFound";
-import { ModalProvider, useModal } from "./context/ModalContext";
-import AuditModal from "./components/AuditModal";
+import Site from "./site/Site";
 
-const queryClient = new QueryClient();
-
-const ModalWrapper = () => {
-  const { isOpen, closeModal } = useModal();
-  return <AuditModal isOpen={isOpen} onClose={closeModal} />;
-};
+// The dashboard and the old 404 live in their own chunk, untouched by the revamp.
+const LegacyApp = lazy(() => import("./LegacyApp"));
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <ModalProvider>
-        <ModalWrapper />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </ModalProvider>
-    </TooltipProvider>
-  </QueryClientProvider>
+  <BrowserRouter>
+    <Routes>
+      <Route path="/" element={<Site />} />
+      <Route
+        path="*"
+        element={
+          <Suspense fallback={null}>
+            <LegacyApp />
+          </Suspense>
+        }
+      />
+    </Routes>
+  </BrowserRouter>
 );
 
 export default App;
