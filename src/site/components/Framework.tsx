@@ -1,12 +1,13 @@
 import { useEffect, useRef } from "react";
 import { framework, steps } from "../content";
 import { clamp01, onScrollFrame, prefersReducedMotion } from "../lib/motion";
+import { Arrow } from "./Shell";
 
 /**
  * Four full-screen panels that stack. Each sticks to the top while the next
  * slides over it. Grey throughout; each step's numeral carries its one accent.
  */
-export default function Framework() {
+export function Panels() {
   const list = useRef<HTMLOListElement>(null);
 
   useEffect(() => {
@@ -28,20 +29,7 @@ export default function Framework() {
   }, []);
 
   return (
-    <section className="rc-fw" id="framework" data-theme="dark" data-section="Framework">
-      <div className="rc-fw__intro">
-        <p className="rc-label" data-reveal>
-          {framework.label}
-        </p>
-        <h2 className="rc-h2" data-reveal>
-          {framework.title}
-          <i className="rc-dot">.</i>
-        </h2>
-        <p data-reveal style={{ ["--d" as string]: 120 }}>
-          {framework.intro}
-        </p>
-      </div>
-
+    <section className="rc-fw" data-theme="dark">
       <ol className="rc-fw__list" ref={list}>
         {steps.map((s) => (
           <li className="rc-fw__panel" key={s.n} style={{ ["--accent" as string]: `var(--${s.accent})` }}>
@@ -59,11 +47,60 @@ export default function Framework() {
                 <div className="rc-fw__rule" />
                 <h3>{s.title}</h3>
                 <p>{s.body}</p>
+                <ul className="rc-fw__inc">
+                  {s.includes.map((x) => (
+                    <li key={x}>{x}</li>
+                  ))}
+                </ul>
               </div>
             </div>
           </li>
         ))}
       </ol>
+    </section>
+  );
+}
+
+/** Home page teaser: the four steps as large rows, leading to the Framework page. */
+export function FrameworkIndex() {
+  return (
+    <section className="rc-fwi" data-theme="dark">
+      <div className="rc-fwi__head">
+        <p className="rc-label" data-reveal>
+          {framework.label}
+        </p>
+        <h2 className="rc-h2" data-reveal>
+          {framework.title}
+          <i className="rc-dot">.</i>
+        </h2>
+        <p data-reveal style={{ ["--d" as string]: 120 }}>
+          {framework.intro}
+        </p>
+      </div>
+      <ol className="rc-rows">
+        {steps.map((s, i) => (
+          <li key={s.n} data-reveal style={{ ["--d" as string]: i * 70 }}>
+            <a
+              className="rc-row"
+              href="/framework"
+              data-cursor="Open"
+              style={{ ["--accent" as string]: `var(--${s.accent})` }}
+            >
+              <span className="rc-row__n">{s.n}</span>
+              <span className="rc-row__t">{s.title}</span>
+              <span className="rc-row__d">{s.short}</span>
+              <span className="rc-row__go">
+                <Arrow />
+              </span>
+            </a>
+          </li>
+        ))}
+      </ol>
+      <p className="rc-fwi__more" data-reveal>
+        <a className="rc-link" href="/framework">
+          {framework.indexCta}
+        </a>
+      </p>
     </section>
   );
 }

@@ -1,32 +1,19 @@
 import { useEffect, useRef, useState } from "react";
-import { hero, nav } from "../content";
-import { onScrollFrame } from "../lib/motion";
-import { Arrow } from "./Hero";
+import { useLocation } from "react-router-dom";
+import { pageLabel, pages } from "../content";
+import { Arrow } from "./Shell";
 
 /**
- * The site's only persistent navigation. Left side names the section in view
- * and opens the section list. Right side is always the audit call to action.
+ * The site's navigation. Left side names the page you are on and opens the
+ * page list. Right side is always the audit call to action.
  */
 export default function Pill() {
-  const [where, setWhere] = useState("Home");
+  const { pathname } = useLocation();
+  const here = pathname.replace(/\/+$/, "") || "/";
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLElement>(null);
 
-  useEffect(() => {
-    let current = "";
-    return onScrollFrame((vh) => {
-      const sections = document.querySelectorAll<HTMLElement>("[data-section]");
-      let name = current;
-      sections.forEach((s) => {
-        const r = s.getBoundingClientRect();
-        if (r.top <= vh * 0.5 && r.bottom > vh * 0.5) name = s.dataset.section ?? name;
-      });
-      if (name !== current) {
-        current = name;
-        setWhere(name);
-      }
-    });
-  }, []);
+  useEffect(() => setOpen(false), [here]);
 
   useEffect(() => {
     if (!open) return;
@@ -44,14 +31,14 @@ export default function Pill() {
   }, [open]);
 
   return (
-    <nav className={`rc-pill${where === "The ask" ? " is-away" : ""}`} aria-label="Sections" ref={ref}>
+    <nav className="rc-pill" aria-label="Pages" ref={ref}>
       {open && (
         <ul className="rc-pill__menu" id="rc-pill-menu">
-          {nav.map((item, i) => (
-            <li key={item.id}>
-              <a href={`#${item.id}`} aria-current={item.label === where || undefined} onClick={() => setOpen(false)}>
+          {pages.map((p, i) => (
+            <li key={p.path}>
+              <a href={p.path} aria-current={p.path === here ? "page" : undefined} onClick={() => setOpen(false)}>
                 <span>{String(i).padStart(2, "0")}</span>
-                {item.label}
+                {p.label}
               </a>
             </li>
           ))}
@@ -65,15 +52,18 @@ export default function Pill() {
         onClick={() => setOpen((v) => !v)}
       >
         <i className="rc-pill__dot" aria-hidden="true" />
-        <span className="rc-pill__name">{where}</span>
+        <span className="rc-pill__name">{pageLabel(here)}</span>
+        <span className="rc-pill__menuword">Menu</span>
         <svg viewBox="0 0 10 7" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
           <path d="M1 6l4-4 4 4" />
         </svg>
       </button>
-      <a className="rc-pill__cta" href="#ask" data-cursor="Ask">
-        {hero.cta.replace("Get your free", "Get your")}
-        <Arrow />
-      </a>
+      {here !== "/audit" && (
+        <a className="rc-pill__cta" href="/audit" data-cursor="Ask">
+          Get your audit
+          <Arrow />
+        </a>
+      )}
     </nav>
   );
 }

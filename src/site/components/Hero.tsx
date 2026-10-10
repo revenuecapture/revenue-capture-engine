@@ -1,66 +1,26 @@
-import { useEffect, useState } from "react";
-import { brand, hero, steps } from "../content";
+import { hero, steps } from "../content";
 import { useMagnetic } from "./Cursor";
-
-export const Arrow = ({ down = false }: { down?: boolean }) => (
-  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
-    {down ? <path d="M8 2v12M3 9l5 5 5-5" /> : <path d="M2 8h12M9 3l5 5-5 5" />}
-  </svg>
-);
-
-/** Live local time for the studio's city. Renders empty until mounted. */
-export function Clock() {
-  const [time, setTime] = useState("");
-  useEffect(() => {
-    const fmt = new Intl.DateTimeFormat("en-GB", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-      timeZone: brand.timeZone,
-    });
-    const tick = () => setTime(fmt.format(new Date()));
-    tick();
-    const id = window.setInterval(tick, 15000);
-    return () => window.clearInterval(id);
-  }, []);
-  return <time>{time}</time>;
-}
+import { Arrow, Lines, TopBar, Tri } from "./Shell";
 
 export default function Hero() {
   const cta = useMagnetic<HTMLAnchorElement>(8);
   const badgeText = "THE ASK STARTS HERE · THE ASK STARTS HERE · ";
 
   return (
-    <header className="rc-hero" data-theme="light" data-section="Home">
-      <div className="rc-hero__lines" aria-hidden="true">
-        <i />
-        <i />
-        <i />
-        <i />
-      </div>
-
-      <div className="rc-top rc-label">
-        <a className="rc-top__logo" href="/" aria-label="revCap home">
-          <img src="/brand/revcap-full-color.svg" alt="revCap" width="132" height="43" />
-        </a>
-        <p className="rc-top__meta" data-intro style={{ ["--d" as string]: 250 }}>
-          {brand.descriptor}
-        </p>
-        <p className="rc-top__clock" data-intro style={{ ["--d" as string]: 320 }}>
-          {brand.city} <Clock />
-        </p>
-      </div>
+    <header className="rc-hero" data-theme="light">
+      <Lines />
+      <TopBar />
 
       <div className="rc-hero__aside">
         <p className="rc-hero__sub" data-intro style={{ ["--d" as string]: 420 }}>
           {hero.sub}
         </p>
         <div className="rc-hero__actions" data-intro style={{ ["--d" as string]: 520 }}>
-          <a className="rc-btn rc-btn--primary" href="#ask" data-cursor="Ask" ref={cta}>
+          <a className="rc-btn rc-btn--primary" href="/audit" data-cursor="Ask" ref={cta}>
             {hero.cta}
             <Arrow />
           </a>
-          <a className="rc-link" href="#framework">
+          <a className="rc-link" href="/framework">
             {hero.secondary}
           </a>
         </div>
@@ -103,11 +63,7 @@ export default function Hero() {
         </a>
       </div>
 
-      <div className="rc-tri rc-hero__tri" aria-hidden="true">
-        <i />
-        <i />
-        <i />
-      </div>
+      <Tri className="rc-hero__tri" />
     </header>
   );
 }

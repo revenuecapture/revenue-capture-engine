@@ -32,6 +32,7 @@ export function onFrame(fn: FrameFn) {
 }
 
 /* ── Smooth scroll ── */
+let forced = false;
 let lenis: InstanceType<typeof Lenis> | null = null;
 
 export function startSmoothScroll() {
@@ -57,6 +58,19 @@ export function scrollToId(id: string) {
   }
 }
 
+/** Jump to the top with no animation. Used between pages. */
+export function resetScroll() {
+  if (lenis) lenis.scrollTo(0, { immediate: true, force: true });
+  window.scrollTo(0, 0);
+  forced = true;
+}
+
+export function pauseScroll(paused: boolean) {
+  if (!lenis) return;
+  if (paused) lenis.stop();
+  else lenis.start();
+}
+
 /* ── Scroll-linked work: runs only on frames where scroll or viewport changed ── */
 type ScrollFn = (vh: number, vw: number) => void;
 const scrollFns = new Set<ScrollFn>();
@@ -64,7 +78,6 @@ let offScrollLoop: (() => void) | null = null;
 let seenY = -1;
 let seenH = -1;
 let seenW = -1;
-let forced = false;
 
 export function onScrollFrame(fn: ScrollFn) {
   scrollFns.add(fn);

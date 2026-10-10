@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { logos, proof } from "../content";
 import { onFrame, prefersReducedMotion } from "../lib/motion";
 
@@ -40,21 +40,29 @@ function Count({ stat }: { stat: Stat }) {
   return <span ref={ref}>{format(stat.value, stat.decimals ?? 0)}</span>;
 }
 
+export function Mark({ slug, hidden = false }: { slug: string; hidden?: boolean }) {
+  const l = logos.find((x) => x.slug === slug);
+  if (!l) return null;
+  return (
+    <span
+      className="rc-mark"
+      role={hidden ? undefined : "img"}
+      aria-label={hidden ? undefined : l.name}
+      style={{
+        ["--w" as string]: `${l.w}px`,
+        ["--h" as string]: `${l.h}px`,
+        ["--src" as string]: `url(/logos/${l.slug}.png)`,
+      }}
+    />
+  );
+}
+
 function LogoSet({ hidden = false }: { hidden?: boolean }) {
   return (
     <ul className="rc-marquee__set" aria-hidden={hidden || undefined}>
       {logos.map((l) => (
         <li key={l.slug}>
-          <span
-            className="rc-mark"
-            role={hidden ? undefined : "img"}
-            aria-label={hidden ? undefined : l.name}
-            style={{
-              ["--w" as string]: `${l.w}px`,
-              ["--h" as string]: `${l.h}px`,
-              ["--src" as string]: `url(/logos/${l.slug}.png)`,
-            }}
-          />
+          <Mark slug={l.slug} hidden={hidden} />
         </li>
       ))}
     </ul>
@@ -62,10 +70,11 @@ function LogoSet({ hidden = false }: { hidden?: boolean }) {
 }
 
 /** Auto-scrolling strip that can be dragged. With reduced motion it becomes a static wrapped row. */
-function Marquee() {
+export function Marquee() {
   const wrap = useRef<HTMLDivElement>(null);
   const track = useRef<HTMLDivElement>(null);
-  const still = typeof window !== "undefined" && prefersReducedMotion();
+  const [still, setStill] = useState(false);
+  useEffect(() => setStill(prefersReducedMotion()), []);
 
   useEffect(() => {
     const el = wrap.current;
@@ -144,9 +153,41 @@ function Marquee() {
   );
 }
 
+export function Stats() {
+  return (
+    <ol className="rc-stats">
+      {(proof.stats as Stat[]).map((s, i) => (
+        <li
+          className="rc-stat"
+          key={s.label}
+          data-reveal
+          style={{ ["--stat" as string]: `var(--${s.accent})`, ["--d" as string]: i * 90 }}
+        >
+          <p className="rc-stat__n">
+            <small>{s.prefix}</small>
+            <Count stat={s} />
+            {s.suffix}
+          </p>
+          <p className="rc-stat__l">{s.label}</p>
+        </li>
+      ))}
+    </ol>
+  );
+}
+
+export function Brands() {
+  return (
+    <div className="rc-brands" data-reveal>
+      <p className="rc-label">{proof.marqueeLabel}</p>
+      <Marquee />
+    </div>
+  );
+}
+
+/** Home page proof block: headline, three numbers, the brand strip, a way through to Work. */
 export default function Proof() {
   return (
-    <section className="rc-proof" id="proof" data-theme="dark" data-section="Proof">
+    <section className="rc-proof" id="proof" data-theme="dark">
       <div className="rc-proof__head">
         <p className="rc-label" data-reveal>
           {proof.label}
@@ -156,29 +197,13 @@ export default function Proof() {
           <i className="rc-dot">.</i>
         </h2>
       </div>
-
-      <ol className="rc-stats">
-        {(proof.stats as Stat[]).map((s, i) => (
-          <li
-            className="rc-stat"
-            key={s.label}
-            data-reveal
-            style={{ ["--stat" as string]: `var(--${s.accent})`, ["--d" as string]: i * 90 }}
-          >
-            <p className="rc-stat__n">
-              <small>{s.prefix}</small>
-              <Count stat={s} />
-              {s.suffix}
-            </p>
-            <p className="rc-stat__l">{s.label}</p>
-          </li>
-        ))}
-      </ol>
-
-      <div className="rc-brands" data-reveal>
-        <p className="rc-label">{proof.marqueeLabel}</p>
-        <Marquee />
-      </div>
+      <Stats />
+      <Brands />
+      <p className="rc-proof__more" data-reveal>
+        <a className="rc-link" href="/work">
+          See the work behind the numbers
+        </a>
+      </p>
     </section>
   );
 }

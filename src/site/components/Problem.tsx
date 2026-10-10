@@ -19,7 +19,7 @@ export default function Problem() {
   const n = problem.statement.length;
 
   return (
-    <section className="rc-state" id="problem" data-theme="light" data-section="The problem">
+    <section className="rc-state" id="problem" data-theme="light">
       <p className="rc-label" data-reveal>
         {problem.label}
       </p>
