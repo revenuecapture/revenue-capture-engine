@@ -141,6 +141,8 @@ export const audits = {
       title: "Meta Ads Audit",
       body: "A forensic review of your paid advertising. We identify where budget is leaking, which audiences are underserved, and where your highest-return opportunities live.",
       accent: "wine",
+      tint: "salt",
+      slug: "meta-ads",
     },
     {
       n: "B",
@@ -148,6 +150,8 @@ export const audits = {
       title: "Digital Presence Audit",
       body: "A full analysis of your brand across every digital touchpoint: social, search, website, content. We map the gap between where you are and where you need to be.",
       accent: "blue",
+      tint: "ice",
+      slug: "digital-presence",
     },
     {
       n: "C",
@@ -155,9 +159,12 @@ export const audits = {
       title: "Market Gap Audit",
       body: "We study your competitive landscape to find the white space your competitors are ignoring. This is where your positioning strategy lives.",
       accent: "pine",
+      tint: "moth",
+      slug: "market-gap",
     },
   ],
   note: "No commitment. No pitch. Just clarity.",
+  pickLabel: "Pick the one that fits. It goes straight into the form.",
 };
 
 export const work = {
@@ -282,6 +289,7 @@ export const about = {
 export const ask = {
   label: "The ask",
   titleLines: ["Your revenue", "is waiting"],
+  oneLine: ["Your revenue is waiting"],
   sub: "Start with a free audit. A clear picture of where your revenue is going and how to capture it.",
   promises: ["No commitment", "No pitch", "Just clarity"],
   auditTypes: ["Meta Ads Audit", "Digital Presence Audit", "Market Gap Audit", "Not sure, let revCap decide"],

@@ -56,7 +56,7 @@ export function TopBar() {
   return (
     <div className="rc-top rc-label">
       <a className="rc-top__logo" href="/" aria-label="revCap home">
-        <img src="/brand/revcap-full-color.svg" alt="revCap" width="132" height="43" />
+        <img src="/brand/revcap-ash.svg" alt="revCap" width="132" height="43" />
       </a>
       <p className="rc-top__meta" data-intro style={{ ["--d" as string]: 250 }}>
         {brand.descriptor}
@@ -73,15 +73,18 @@ export function PageHero({
   label,
   lines,
   lede,
+  compact = false,
   children,
 }: {
   label: string;
   lines: readonly string[];
   lede?: string;
+  /** A shorter hero, for pages where something else must sit above the fold. */
+  compact?: boolean;
   children?: ReactNode;
 }) {
   return (
-    <header className="rc-phero" data-theme="light">
+    <header className={`rc-phero${compact ? " rc-phero--compact" : ""}`} data-theme="light">
       <Lines />
       <TopBar />
       <div className="rc-phero__body">

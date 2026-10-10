@@ -750,14 +750,20 @@ html.rc-js [data-reveal="lines"].is-in .rc-line > span {
   padding-left: 20px;
   max-width: 560px;
 }
-.rc-fw__copy h3 {
+.rc-fw__copy,
+.rc-fw__title,
+.rc-fw__body,
+.rc-fw__rule {
+  display: block;
+}
+.rc-fw__title {
   font-family: var(--font-display);
   font-weight: 800;
   font-size: clamp(36px, 4.6vw, 76px);
   line-height: 0.95;
   letter-spacing: -0.03em;
 }
-.rc-fw__copy p {
+.rc-fw__body {
   margin-top: clamp(16px, 1.8vw, 28px);
   max-width: 34ch;
   font-size: clamp(16px, 1.25vw, 19px);
@@ -1645,12 +1651,12 @@ a.rc-row:hover .rc-row__go {
   gap: 8px;
   font-size: 14px;
 }
-.rc-fw__inc li {
+.rc-fw__inc > span {
   display: flex;
   align-items: baseline;
   gap: 12px;
 }
-.rc-fw__inc li::before {
+.rc-fw__inc > span::before {
   content: "";
   flex: none;
   width: 7px;
@@ -1666,15 +1672,38 @@ a.rc-row:hover .rc-row__go {
 .rc-cards {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  margin: clamp(48px, 6vw, 96px) var(--gutter) 0;
+  margin: clamp(48px, 6vw, 96px) calc(var(--gutter) - 28px) 0;
   border-top: 1px solid var(--line);
 }
-.rc-card {
-  padding: 28px 28px 8px 0;
-}
 .rc-card + .rc-card {
-  padding-left: 28px;
   border-left: 1px solid var(--line);
+}
+.rc-card__hit {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 28px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background-color 0.35s ease,
+    box-shadow 0.35s ease;
+}
+.rc-card__hit:hover {
+  background: color-mix(in srgb, var(--tint) 42%, transparent);
+}
+.rc-card.is-picked .rc-card__hit {
+  background: var(--tint);
+  box-shadow: inset 0 3px 0 var(--accent);
+}
+.rc-card__n,
+.rc-card__t,
+.rc-card__b,
+.rc-card .rc-label {
+  display: block;
 }
 .rc-card__n {
   font-family: var(--font-display);
@@ -1684,8 +1713,12 @@ a.rc-row:hover .rc-row__go {
   letter-spacing: -0.04em;
   color: var(--accent);
   margin-bottom: clamp(28px, 4vw, 64px);
+  transition: transform 0.5s var(--ease-out);
 }
-.rc-card h3 {
+.rc-card__hit:hover .rc-card__n {
+  transform: translateY(-6px);
+}
+.rc-card__t {
   margin: 10px 0 14px;
   font-family: var(--font-display);
   font-weight: 800;
@@ -1693,10 +1726,28 @@ a.rc-row:hover .rc-row__go {
   line-height: 1;
   letter-spacing: -0.02em;
 }
-.rc-card > p:last-child {
+.rc-card__b {
   max-width: 36ch;
   font-size: 15.5px;
   color: var(--muted);
+}
+.rc-card__go {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 22px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--accent);
+}
+.rc-card__go svg {
+  width: 14px;
+  height: 14px;
+  transition: transform 0.4s var(--ease-out);
+}
+.rc-card__hit:hover .rc-card__go svg {
+  transform: translate(3px, 0);
 }
 
 /* ── Work page ──────────────────────────────────────────── */
@@ -2129,8 +2180,6 @@ a.rc-row:hover .rc-row__go {
   .rc-team__grid {
     grid-template-columns: 1fr;
   }
-  .rc-card,
-  .rc-card + .rc-card,
   .rc-roles__grid article,
   .rc-roles__grid article + article,
   .rc-team__grid article,
@@ -2145,8 +2194,19 @@ a.rc-row:hover .rc-row__go {
     padding: 28px 20px 36px;
     margin: 0 -20px;
   }
+  .rc-cards {
+    margin-left: 0;
+    margin-right: 0;
+  }
+  .rc-card + .rc-card {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+  .rc-card__hit {
+    padding: 26px var(--gutter) 30px;
+  }
   .rc-card__n {
-    margin-bottom: 28px;
+    margin-bottom: 24px;
   }
   .rc-plain ul {
     margin-left: 0;
@@ -2177,6 +2237,60 @@ a.rc-row:hover .rc-row__go {
   }
 }
 
-.rc-ask + .rc-audits {
-  padding-top: 0;
+/* ── Final pass ─────────────────────────────────────────── */
+.rc-fw__open {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: clamp(22px, 2.4vw, 36px);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent);
+}
+.rc-fw__open svg {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.45s var(--ease-out);
+}
+a.rc-fw__inner:hover .rc-fw__open svg {
+  transform: translateX(8px);
+}
+a.rc-fw__inner .rc-fw__title {
+  transition: transform 0.6s var(--ease-out);
+}
+a.rc-fw__inner:hover .rc-fw__title {
+  transform: translateX(14px);
+}
+
+.rc-phero--compact .rc-phero__body {
+  padding: clamp(18px, 2vw, 30px) 0 clamp(48px, 4vw, 60px);
+}
+.rc-phero--compact .rc-phero__label {
+  margin-bottom: 12px;
+}
+.rc-pick {
+  padding-bottom: clamp(64px, 7vw, 112px);
+}
+.rc-pick__label {
+  padding: clamp(14px, 1.4vw, 20px) var(--gutter);
+  font-size: 15px;
+  color: var(--muted);
+}
+.rc-pick .rc-cards {
+  margin-top: 0;
+}
+.rc-pick .rc-card__hit {
+  padding-top: 22px;
+  padding-bottom: 24px;
+}
+.rc-pick .rc-card__n {
+  font-size: clamp(52px, 5.4vw, 88px);
+  margin-bottom: clamp(14px, 1.4vw, 20px);
+}
+.rc-pick .rc-card__go {
+  margin-top: 16px;
+}
+.rc-ask__lede .rc-label {
+  margin-bottom: 18px;
+  color: var(--wine);
 }

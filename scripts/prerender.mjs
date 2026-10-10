@@ -24,4 +24,12 @@ for (const route of routes) {
   console.log(`prerendered ${route.path} -> ${route.file} (${(html.length / 1024).toFixed(1)} kB)`);
 }
 
+// A sitemap of the real pages, for search engines.
+const origin = "https://revcap.xyz";
+const urls = routes.filter((r) => r.file !== "404.html").map((r) => `  <url><loc>${origin}${r.path === "/" ? "/" : `${r.path}/`}</loc></url>`);
+fs.writeFileSync(
+  path.join(dist, "sitemap.xml"),
+  `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.join("\n")}\n</urlset>\n`,
+);
+
 fs.rmSync(ssr, { recursive: true, force: true });

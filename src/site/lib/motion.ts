@@ -46,13 +46,13 @@ export function startSmoothScroll() {
   };
 }
 
-export function scrollToId(id: string) {
+export function scrollToId(id: string, offset = 0) {
   const target = id === "top" ? null : document.getElementById(id);
   if (id !== "top" && !target) return;
   if (lenis) {
-    lenis.scrollTo(target ?? 0, { duration: 1.2 });
+    lenis.scrollTo(target ?? 0, { duration: 1.2, offset });
   } else if (target) {
-    target.scrollIntoView({ behavior: "auto", block: "start" });
+    window.scrollTo(0, target.getBoundingClientRect().top + window.scrollY + offset);
   } else {
     window.scrollTo(0, 0);
   }

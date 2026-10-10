@@ -6,8 +6,11 @@ import { Arrow } from "./Shell";
 /**
  * Four full-screen panels that stack. Each sticks to the top while the next
  * slides over it. Grey throughout; each step's numeral carries its one accent.
+ *
+ * `linked` turns every panel into a link to that step on the Framework page
+ * (used on Home). Without it the panels show the fuller detail for each step.
  */
-export function Panels() {
+export function Panels({ linked = false }: { linked?: boolean }) {
   const list = useRef<HTMLOListElement>(null);
 
   useEffect(() => {
@@ -29,43 +32,64 @@ export function Panels() {
   }, []);
 
   return (
-    <section className="rc-fw" data-theme="dark">
-      <ol className="rc-fw__list" ref={list}>
-        {steps.map((s) => (
-          <li className="rc-fw__panel" key={s.n} style={{ ["--accent" as string]: `var(--${s.accent})` }}>
-            <div className="rc-fw__inner">
-              <p className="rc-fw__meta rc-label">
-                <span>{framework.label}</span>
-                <span>
-                  {s.n} / {String(steps.length).padStart(2, "0")}
-                </span>
-              </p>
-              <span className="rc-fw__num" aria-hidden="true">
-                {s.n}
+    <ol className="rc-fw__list" ref={list}>
+      {steps.map((s) => {
+        const body = (
+          <>
+            <span className="rc-fw__meta rc-label">
+              <span>{framework.label}</span>
+              <span>
+                {s.n} / {String(steps.length).padStart(2, "0")}
               </span>
-              <div className="rc-fw__copy">
-                <div className="rc-fw__rule" />
-                <h3>{s.title}</h3>
-                <p>{s.body}</p>
-                <ul className="rc-fw__inc">
+            </span>
+            <span className="rc-fw__num" aria-hidden="true">
+              {s.n}
+            </span>
+            <span className="rc-fw__copy">
+              <span className="rc-fw__rule" />
+              <strong className="rc-fw__title">{s.title}</strong>
+              <span className="rc-fw__body">{s.body}</span>
+              {linked ? (
+                <span className="rc-fw__open">
+                  Open step {s.n}
+                  <Arrow />
+                </span>
+              ) : (
+                <span className="rc-fw__inc">
                   {s.includes.map((x) => (
-                    <li key={x}>{x}</li>
+                    <span key={x}>{x}</span>
                   ))}
-                </ul>
-              </div>
-            </div>
+                </span>
+              )}
+            </span>
+          </>
+        );
+        return (
+          <li
+            className="rc-fw__panel"
+            key={s.n}
+            id={linked ? undefined : `step-${s.n}`}
+            style={{ ["--accent" as string]: `var(--${s.accent})` }}
+          >
+            {linked ? (
+              <a className="rc-fw__inner" href={`/framework#step-${s.n}`} data-cursor="Open">
+                {body}
+              </a>
+            ) : (
+              <div className="rc-fw__inner">{body}</div>
+            )}
           </li>
-        ))}
-      </ol>
-    </section>
+        );
+      })}
+    </ol>
   );
 }
 
-/** Home page teaser: the four steps as large rows, leading to the Framework page. */
-export function FrameworkIndex() {
+/** Home page: the section heading, then the four stacked panels, each one a link. */
+export function FrameworkStack() {
   return (
-    <section className="rc-fwi" data-theme="dark">
-      <div className="rc-fwi__head">
+    <section className="rc-fw" data-theme="dark">
+      <div className="rc-fw__intro">
         <p className="rc-label" data-reveal>
           {framework.label}
         </p>
@@ -77,30 +101,16 @@ export function FrameworkIndex() {
           {framework.intro}
         </p>
       </div>
-      <ol className="rc-rows">
-        {steps.map((s, i) => (
-          <li key={s.n} data-reveal style={{ ["--d" as string]: i * 70 }}>
-            <a
-              className="rc-row"
-              href="/framework"
-              data-cursor="Open"
-              style={{ ["--accent" as string]: `var(--${s.accent})` }}
-            >
-              <span className="rc-row__n">{s.n}</span>
-              <span className="rc-row__t">{s.title}</span>
-              <span className="rc-row__d">{s.short}</span>
-              <span className="rc-row__go">
-                <Arrow />
-              </span>
-            </a>
-          </li>
-        ))}
-      </ol>
-      <p className="rc-fwi__more" data-reveal>
-        <a className="rc-link" href="/framework">
-          {framework.indexCta}
-        </a>
-      </p>
+      <Panels linked />
+    </section>
+  );
+}
+
+/** Framework page: the panels alone, with full detail. */
+export function FrameworkDetail() {
+  return (
+    <section className="rc-fw" data-theme="dark">
+      <Panels />
     </section>
   );
 }

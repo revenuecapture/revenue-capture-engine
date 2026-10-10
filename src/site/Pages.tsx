@@ -1,11 +1,11 @@
 // One component per page. Shared pieces live in ./components.
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { about, ask, audits, framework, pages, pricing, privacy, steps, work, type Word } from "./content";
-import { clamp01, onScrollFrame, prefersReducedMotion } from "./lib/motion";
+import { clamp01, onScrollFrame, prefersReducedMotion, scrollToId } from "./lib/motion";
 import Hero from "./components/Hero";
 import Proof, { Brands, Mark, Stats } from "./components/Proof";
 import Problem from "./components/Problem";
-import { FrameworkIndex, Panels } from "./components/Framework";
+import { FrameworkDetail, FrameworkStack } from "./components/Framework";
 import AskForm from "./components/Ask";
 import { Arrow, Closing, PageHero, usePage } from "./components/Shell";
 
@@ -35,6 +35,56 @@ function FillText({ words, className = "" }: { words: Word[]; className?: string
   );
 }
 
+/**
+ * The three audits as large cards. With `onPick` they are buttons that choose
+ * an audit on this page; without it they are links that open the audit page
+ * with that audit already selected.
+ */
+function AuditCards({ picked, onPick }: { picked?: string; onPick?: (title: string) => void }) {
+  return (
+    <ol className="rc-cards">
+      {audits.items.map((a, i) => {
+        const isPicked = picked === a.title;
+        const inner = (
+          <>
+            <span className="rc-card__n">{a.n}</span>
+            <span className="rc-label">{a.tag}</span>
+            <strong className="rc-card__t">{a.title}</strong>
+            <span className="rc-card__b">{a.body}</span>
+            <span className="rc-card__go">
+              {isPicked ? "Selected" : "Choose this audit"}
+              <Arrow down={Boolean(onPick)} />
+            </span>
+          </>
+        );
+        return (
+          <li
+            className={`rc-card${isPicked ? " is-picked" : ""}`}
+            key={a.title}
+            data-reveal={onPick ? undefined : true}
+            data-intro={onPick ? true : undefined}
+            style={{
+              ["--accent" as string]: `var(--${a.accent})`,
+              ["--tint" as string]: `var(--${a.tint})`,
+              ["--d" as string]: onPick ? 420 + i * 90 : i * 90,
+            }}
+          >
+            {onPick ? (
+              <button type="button" className="rc-card__hit" onClick={() => onPick(a.title)} aria-pressed={isPicked} data-cursor="Choose">
+                {inner}
+              </button>
+            ) : (
+              <a className="rc-card__hit" href={`/audit?audit=${a.slug}#form`} data-cursor="Choose">
+                {inner}
+              </a>
+            )}
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
+
 function AuditTypes() {
   return (
     <section className="rc-audits" data-theme="light" id="audits">
@@ -50,21 +100,7 @@ function AuditTypes() {
           {audits.intro}
         </p>
       </div>
-      <ol className="rc-cards">
-        {audits.items.map((a, i) => (
-          <li
-            className="rc-card"
-            key={a.title}
-            data-reveal
-            style={{ ["--accent" as string]: `var(--${a.accent})`, ["--d" as string]: i * 90 }}
-          >
-            <p className="rc-card__n">{a.n}</p>
-            <p className="rc-label">{a.tag}</p>
-            <h3>{a.title}</h3>
-            <p>{a.body}</p>
-          </li>
-        ))}
-      </ol>
+      <AuditCards />
     </section>
   );
 }
@@ -77,7 +113,7 @@ export function Home() {
       <main id="main">
         <Proof />
         <Problem />
-        <FrameworkIndex />
+        <FrameworkStack />
         <Closing />
       </main>
     </>
@@ -98,7 +134,7 @@ export function FrameworkPage() {
         </ul>
       </PageHero>
       <main id="main">
-        <Panels />
+        <FrameworkDetail />
         <AuditTypes />
         <Closing />
       </main>
@@ -278,13 +314,35 @@ export function AboutPage() {
 
 export function AuditPage() {
   usePage(title("/audit"));
+  const [picked, setPicked] = useState("");
+
+  // A link such as /audit?audit=market-gap arrives with that audit already chosen.
+  useEffect(() => {
+    const slug = new URLSearchParams(window.location.search).get("audit");
+    const match = audits.items.find((a) => a.slug === slug);
+    if (match) setPicked(match.title);
+  }, []);
+
+  const pick = (auditTitle: string) => {
+    setPicked(auditTitle);
+    scrollToId("form", -24);
+    window.setTimeout(() => document.getElementById("rc-name")?.focus({ preventScroll: true }), 900);
+  };
+
   return (
     <>
-      <PageHero label={ask.label} lines={ask.titleLines} />
+      <PageHero label={ask.label} lines={ask.oneLine} compact />
       <main id="main">
-        <section className="rc-ask" data-theme="light">
+        <section className="rc-pick" data-theme="light">
+          <p className="rc-pick__label" data-intro style={{ ["--d" as string]: 360 }}>
+            {audits.pickLabel}
+          </p>
+          <AuditCards picked={picked} onPick={pick} />
+        </section>
+        <section className="rc-ask" data-theme="light" id="form">
           <div className="rc-ask__grid">
-            <div className="rc-ask__lede" data-intro style={{ ["--d" as string]: 420 }}>
+            <div className="rc-ask__lede" data-reveal>
+              <p className="rc-label">{picked || "Your details"}</p>
               <p className="rc-ask__sub">{ask.sub}</p>
               <ul className="rc-promises">
                 {ask.promises.map((p) => (
@@ -292,10 +350,9 @@ export function AuditPage() {
                 ))}
               </ul>
             </div>
-            <AskForm />
+            <AskForm preset={picked} onAuditChange={setPicked} />
           </div>
         </section>
-        <AuditTypes />
       </main>
     </>
   );

@@ -59,7 +59,7 @@ export default function PageTransition({ children }: { children: ReactNode }) {
       const h = window.innerHeight;
       const svg = el.querySelector("svg")!;
       svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
-      if (label.current) label.current.textContent = pageLabel(path);
+      if (label.current) label.current.textContent = pageLabel(path.split("?")[0]);
       el.classList.add("is-on");
       pauseScroll(true);
 
@@ -129,7 +129,7 @@ export default function PageTransition({ children }: { children: ReactNode }) {
         return;
       }
       e.preventDefault();
-      go(url.pathname + url.hash);
+      go(url.pathname + url.search + url.hash);
     };
     document.addEventListener("click", onClick);
     return () => document.removeEventListener("click", onClick);
