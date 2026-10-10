@@ -15,8 +15,8 @@ import {
 // The dashboard lives in its own chunk, untouched by the revamp.
 const LegacyApp = lazy(() => import("./LegacyApp"));
 
-const App = () => (
-  <BrowserRouter>
+/** The route table on its own, so the build can render it to static HTML. */
+export const AppRoutes = () => (
     <Routes>
       <Route element={<Site />}>
         <Route index element={<Home />} />
@@ -37,6 +37,11 @@ const App = () => (
         }
       />
     </Routes>
+);
+
+const App = () => (
+  <BrowserRouter>
+    <AppRoutes />
   </BrowserRouter>
 );
 

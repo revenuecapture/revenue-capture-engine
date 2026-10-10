@@ -1456,7 +1456,7 @@ html.rc.rc-cursor-on select {
   position: relative;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  padding: clamp(64px, 9vw, 150px) 0 clamp(72px, 8vw, 128px);
+  padding: clamp(48px, 6vw, 104px) 0 clamp(88px, 9vw, 136px);
 }
 .rc-phero__label {
   grid-column: 1 / 5;

@@ -1,1 +1,4 @@
-/*    /index.html   200
+# The dashboard renders in the browser, from an empty shell.
+/dashboard     /shell.html   200
+/dashboard/*   /shell.html   200
+# Every public page is a real HTML file. Anything else gets 404.html.
