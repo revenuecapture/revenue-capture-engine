@@ -296,6 +296,7 @@ html.lenis body {
 .rc-top__meta {
   grid-column: 3;
   padding-left: 20px;
+  white-space: nowrap;
 }
 .rc-top__clock {
   grid-column: 4;
