@@ -1,39 +1,48 @@
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
-import Dashboard from "./pages/Dashboard";
-import NotFound from "./pages/NotFound";
-import { ModalProvider, useModal } from "./context/ModalContext";
-import AuditModal from "./components/AuditModal";
+import Site from "./site/Site";
+import {
+  AboutPage,
+  AuditPage,
+  FrameworkPage,
+  Home,
+  NotFoundPage,
+  PricingPage,
+  PrivacyPage,
+  WorkPage,
+} from "./site/Pages";
 
-const queryClient = new QueryClient();
+// The dashboard lives in its own chunk, untouched by the revamp.
+const LegacyApp = lazy(() => import("./LegacyApp"));
 
-const ModalWrapper = () => {
-  const { isOpen, closeModal } = useModal();
-  return <AuditModal isOpen={isOpen} onClose={closeModal} />;
-};
+/** The route table on its own, so the build can render it to static HTML. */
+export const AppRoutes = () => (
+    <Routes>
+      <Route element={<Site />}>
+        <Route index element={<Home />} />
+        <Route path="framework" element={<FrameworkPage />} />
+        <Route path="work" element={<WorkPage />} />
+        <Route path="pricing" element={<PricingPage />} />
+        <Route path="about" element={<AboutPage />} />
+        <Route path="audit" element={<AuditPage />} />
+        <Route path="privacy" element={<PrivacyPage />} />
+        <Route path="*" element={<NotFoundPage />} />
+      </Route>
+      <Route
+        path="/dashboard/*"
+        element={
+          <Suspense fallback={null}>
+            <LegacyApp />
+          </Suspense>
+        }
+      />
+    </Routes>
+);
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <ModalProvider>
-        <ModalWrapper />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </ModalProvider>
-    </TooltipProvider>
-  </QueryClientProvider>
+  <BrowserRouter>
+    <AppRoutes />
+  </BrowserRouter>
 );
 
 export default App;
