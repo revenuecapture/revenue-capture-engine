@@ -939,8 +939,15 @@ html.rc-js [data-reveal="lines"].is-in .rc-line > span {
   color: var(--muted);
 }
 
-/* ── Bottom pill ────────────────────────────────────────── */
+/* ── Bottom pill ──────────────────────────────────────────
+   The pill and its menu are drawn twice. Behind: plain shapes in a blurred,
+   re-sharpened layer, which is what makes them join and part like liquid.
+   In front: the text and buttons, untouched by the filter. */
 .rc-pill {
+  --ph: 48px; /* pill height */
+  --ih: 44px; /* menu item height */
+  --gap: 5px;
+  --mw: 236px; /* menu width */
   position: fixed;
   left: 50%;
   bottom: max(18px, env(safe-area-inset-bottom));
@@ -948,11 +955,9 @@ html.rc-js [data-reveal="lines"].is-in .rc-line > span {
   display: flex;
   align-items: stretch;
   gap: 4px;
+  height: var(--ph);
   padding: 5px;
-  border-radius: 999px;
-  background: var(--ash-deep);
   color: var(--cloud);
-  box-shadow: 0 0 0 1px rgba(240, 238, 233, 0.16);
   transform: translate(-50%, 0);
   transition:
     transform 0.9s var(--ease-out),
@@ -962,6 +967,172 @@ html.rc-pre .rc-pill,
 html.rc-loading .rc-pill {
   transform: translate(-50%, 140%);
   opacity: 0;
+}
+.rc-pill__defs {
+  position: absolute;
+}
+
+/* Liquid layer */
+.rc-pill__goo {
+  position: absolute;
+  left: -32px;
+  right: -32px;
+  bottom: -16px;
+  height: calc(var(--ph) + 32px + var(--n) * (var(--ih) + var(--gap)) + 24px);
+  pointer-events: none;
+  filter: url(#rc-goo);
+}
+.rc-pill__base,
+.rc-pill__drop {
+  position: absolute;
+  left: 32px;
+  background: var(--ash-deep);
+}
+.rc-pill__base {
+  right: 32px;
+  bottom: 16px;
+  height: var(--ph);
+  border-radius: 999px;
+  transition: border-radius 0.5s var(--ease-out);
+}
+.rc-pill__drop {
+  bottom: calc(16px + var(--ph) + var(--gap) + var(--k) * (var(--ih) + var(--gap)));
+  width: var(--mw);
+  height: var(--ih);
+  border-radius: 22px;
+  /* Closed: every blob sits inside the pill, shrunk. */
+  transform: translateY(calc((var(--k) + 1) * (var(--ih) + var(--gap)))) scale(0.42);
+  transition:
+    transform 0.5s cubic-bezier(0.5, 0, 0.75, 0),
+    background-color 0.3s ease;
+  transition-delay: calc((var(--n) - 1 - var(--k)) * 24ms), 0s;
+}
+.rc-pill[data-open] .rc-pill__drop {
+  transform: none;
+  transition:
+    transform 0.72s cubic-bezier(0.3, 1.45, 0.45, 1),
+    background-color 0.3s ease;
+  transition-delay: calc(var(--k) * 42ms), 0s;
+}
+.rc-pill[data-open] .rc-pill__drop.is-hot {
+  transform: scale(1.05, 1.2);
+  transition:
+    transform 0.5s cubic-bezier(0.3, 1.8, 0.45, 1),
+    background-color 0.25s ease;
+  transition-delay: 0s;
+}
+
+/* Text layer */
+.rc-pill__menu {
+  position: absolute;
+  left: 5px;
+  bottom: calc(100% + var(--gap));
+  width: var(--mw);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+  margin-left: -5px;
+  visibility: hidden;
+  pointer-events: none;
+  transition: visibility 0s 0.5s;
+}
+.rc-pill[data-open] .rc-pill__menu {
+  visibility: visible;
+  pointer-events: auto;
+  transition-delay: 0s;
+}
+/* A small bridge so the pointer can travel from the pill to the menu. */
+.rc-pill__menu::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  height: calc(var(--gap) + 4px);
+}
+.rc-pill__menu li {
+  height: var(--ih);
+  opacity: 0;
+  transform: translateY(calc((var(--k) + 1) * (var(--ih) + var(--gap)))) scale(0.42);
+  transition:
+    transform 0.5s cubic-bezier(0.5, 0, 0.75, 0),
+    opacity 0.16s ease;
+  transition-delay: calc((var(--n) - 1 - var(--k)) * 24ms);
+}
+.rc-pill[data-open] .rc-pill__menu li {
+  opacity: 1;
+  transform: none;
+  transition:
+    transform 0.72s cubic-bezier(0.3, 1.45, 0.45, 1),
+    opacity 0.3s ease;
+  transition-delay: calc(var(--k) * 42ms), calc(var(--k) * 42ms + 90ms);
+}
+.rc-pill__menu a {
+  position: relative;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: 100%;
+  padding: 2px 18px 0;
+  border-radius: 22px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 21px;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  transition:
+    color 0.25s ease,
+    transform 0.5s var(--ease-out);
+}
+.rc-pill__menu a span {
+  width: 18px;
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: rgba(240, 238, 233, 0.5);
+  transition: color 0.25s ease;
+}
+.rc-pill__menu a[aria-current="page"]::after {
+  content: "";
+  width: 7px;
+  height: 7px;
+  margin-left: auto;
+  background: var(--salt);
+}
+/* The colour itself: a crisp capsule that swells into place under the label. */
+.rc-pill__menu a::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 3px;
+  border-radius: 20px;
+  background: var(--tint);
+  opacity: 0;
+  transform: scale(0.82, 0.5);
+  transition:
+    transform 0.5s cubic-bezier(0.3, 1.6, 0.45, 1),
+    opacity 0.18s ease;
+}
+.rc-pill__menu li.is-hot a::before {
+  opacity: 1;
+  transform: none;
+}
+.rc-pill__menu li.is-hot a {
+  color: var(--ash-deep);
+  transform: translateX(6px);
+}
+.rc-pill__menu li.is-hot a span {
+  color: rgba(37, 39, 36, 0.6);
+}
+.rc-pill__menu li.is-hot a[aria-current="page"]::after {
+  background: var(--ash-deep);
+}
+
+.rc-pill__where,
+.rc-pill__cta {
+  position: relative;
 }
 .rc-pill__where {
   display: flex;
@@ -978,35 +1149,41 @@ html.rc-loading .rc-pill {
   transition: background-color 0.25s ease;
 }
 .rc-pill__where:hover,
-.rc-pill__where[aria-expanded="true"] {
+.rc-pill[data-open] .rc-pill__where {
   background: rgba(240, 238, 233, 0.09);
 }
 .rc-pill__dot {
   width: 8px;
   height: 8px;
   flex: none;
-  background: var(--salt);
-  transition: background-color 0.4s ease;
+  background: var(--hot, var(--salt));
+  transition: background-color 0.3s ease;
 }
 .rc-pill__name {
   flex: 1;
   text-align: left;
   white-space: nowrap;
 }
+.rc-pill__menuword {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(240, 238, 233, 0.55);
+}
 .rc-pill__where svg {
   width: 10px;
   height: 7px;
   opacity: 0.7;
-  transition: transform 0.35s var(--ease-out);
+  transition: transform 0.45s var(--ease-out);
 }
-.rc-pill__where[aria-expanded="true"] svg {
+.rc-pill[data-open] .rc-pill__where svg {
   transform: rotate(180deg);
 }
 .rc-pill__cta {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 13px 20px 12px;
+  padding: 1px 20px 0;
   border-radius: 999px;
   background: var(--cloud);
   color: var(--ash-deep);
@@ -1018,39 +1195,6 @@ html.rc-loading .rc-pill {
 }
 .rc-pill__cta:hover {
   background: var(--salt);
-}
-.rc-pill__menu {
-  position: absolute;
-  left: 0;
-  bottom: calc(100% + 8px);
-  min-width: 100%;
-  padding: 8px;
-  border-radius: 22px;
-  background: var(--ash-deep);
-  box-shadow: 0 0 0 1px rgba(240, 238, 233, 0.16);
-}
-.rc-pill__menu a {
-  display: flex;
-  align-items: baseline;
-  gap: 14px;
-  padding: 11px 14px 10px;
-  border-radius: 14px;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 22px;
-  line-height: 1;
-  letter-spacing: -0.01em;
-}
-.rc-pill__menu a span {
-  font-family: var(--font-body);
-  font-weight: 500;
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  color: rgba(240, 238, 233, 0.5);
-}
-.rc-pill__menu a:hover,
-.rc-pill__menu a[aria-current="true"] {
-  background: rgba(240, 238, 233, 0.09);
 }
 
 /* ── Cursor: a glass bead with a fluid colour trail ─────── */
@@ -2108,21 +2252,6 @@ a.rc-row:hover .rc-row__go {
 }
 .rc-foot__grid a:hover {
   color: var(--salt);
-}
-
-/* ── Pill, page mode ────────────────────────────────────── */
-.rc-pill__menuword {
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: rgba(240, 238, 233, 0.55);
-}
-.rc-pill__menu a[aria-current="page"] {
-  background: rgba(240, 238, 233, 0.09);
-}
-.rc-pill__where {
-  padding-top: 13px;
-  padding-bottom: 12px;
 }
 
 .rc-state--solo {
