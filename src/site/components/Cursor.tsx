@@ -4,7 +4,8 @@ import { hasFinePointer, onFrame, prefersReducedMotion } from "../lib/motion";
 /**
  * Desktop-only cursor: a glass bead that bends the page beneath it, with a
  * short fluid ribbon in the brand colours trailing behind when it moves.
- * Over anything with data-cursor="Word" the bead swells and says the word.
+ * Over anything with data-cursor="Word" the bead swells and says the word;
+ * data-cursor-tone="wine|blue|pine" picks the colour it swells into.
  * Over form fields it steps aside for the native text cursor.
  */
 
@@ -76,7 +77,11 @@ export default function Cursor() {
         bead.current.dataset.state = state;
         bead.current.dataset.theme = theme;
       }
-      if (tagged && label.current) label.current.textContent = tagged.dataset.cursor ?? "";
+      if (tagged) {
+        if (label.current) label.current.textContent = tagged.dataset.cursor ?? "";
+        // Only updated while over a tag, so the colour holds as the bead shrinks away.
+        if (bead.current) bead.current.dataset.tone = tagged.dataset.cursorTone ?? "";
+      }
     };
 
     const onMove = (e: PointerEvent) => {

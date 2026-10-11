@@ -70,11 +70,11 @@ function AuditCards({ picked, onPick }: { picked?: string; onPick?: (title: stri
             }}
           >
             {onPick ? (
-              <button type="button" className="rc-card__hit" onClick={() => onPick(a.title)} aria-pressed={isPicked} data-cursor="Choose">
+              <button type="button" className="rc-card__hit" onClick={() => onPick(a.title)} aria-pressed={isPicked} data-cursor="Choose" data-cursor-tone={a.accent}>
                 {inner}
               </button>
             ) : (
-              <a className="rc-card__hit" href={`/audit?audit=${a.slug}#form`} data-cursor="Choose">
+              <a className="rc-card__hit" href={`/audit?audit=${a.slug}#form`} data-cursor="Choose" data-cursor-tone={a.accent}>
                 {inner}
               </a>
             )}
