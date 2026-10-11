@@ -8,12 +8,12 @@ const TINTS = ["ice", "salt", "moth"];
 
 /**
  * The site's navigation. Left side names the page you are on; hovering or
- * tapping it lets the page list rise out of the pill like liquid. Right side
- * is always the audit call to action.
+ * tapping it makes the bar grow upward into one panel holding the page list.
+ * Right side is always the audit call to action.
  *
- * The liquid look comes from a blurred-then-sharpened layer of plain shapes
- * (the pill and one blob per menu item) sitting behind the text. The colour on
- * hover is a crisp capsule in the text layer; the blob behind it swells.
+ * The bar and the panel are a single shape, so it opens like a drawer rising
+ * out of the bar. Its top edge swells for a moment on the way up, then
+ * settles flat. Each item fills with a brand tint under the pointer.
  */
 export default function Pill() {
   const { pathname } = useLocation();
@@ -88,14 +88,9 @@ export default function Pill() {
       </svg>
 
       <div className="rc-pill__goo" aria-hidden="true">
-        <i className="rc-pill__base" />
-        {pages.map((p, i) => (
-          <i
-            key={p.path}
-            className={`rc-pill__drop${hot === i ? " is-hot" : ""}`}
-            style={{ ["--k" as string]: last - i }}
-          />
-        ))}
+        <i className="rc-pill__base">
+          <i className="rc-pill__dome" />
+        </i>
       </div>
 
       <ul className="rc-pill__menu" id="rc-pill-menu">

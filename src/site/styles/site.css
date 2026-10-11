@@ -940,14 +940,15 @@ html.rc-js [data-reveal="lines"].is-in .rc-line > span {
 }
 
 /* ── Bottom pill ──────────────────────────────────────────
-   The pill and its menu are drawn twice. Behind: plain shapes in a blurred,
-   re-sharpened layer, which is what makes them join and part like liquid.
-   In front: the text and buttons, untouched by the filter. */
+   The bar and its menu are one shape. Opening it grows that shape upward
+   into a single rounded panel, the same width as the bar. The shape sits in
+   its own layer behind the text; a light filter there gives it its outline
+   and lets the top edge swell briefly while it rises. */
 .rc-pill {
-  --ph: 48px; /* pill height */
+  --ph: 48px; /* bar height */
   --ih: 44px; /* menu item height */
-  --gap: 5px;
-  --mw: 236px; /* menu width */
+  --pad: 6px; /* panel padding */
+  --rise: calc(var(--n) * var(--ih) + var(--pad) * 2);
   position: fixed;
   left: 50%;
   bottom: max(18px, env(safe-area-inset-bottom));
@@ -956,6 +957,7 @@ html.rc-js [data-reveal="lines"].is-in .rc-line > span {
   align-items: stretch;
   gap: 4px;
   height: var(--ph);
+  min-width: 216px;
   padding: 5px;
   color: var(--cloud);
   transform: translate(-50%, 0);
@@ -972,100 +974,88 @@ html.rc-loading .rc-pill {
   position: absolute;
 }
 
-/* Liquid layer */
+/* Shape layer */
 .rc-pill__goo {
   position: absolute;
   left: -32px;
   right: -32px;
   bottom: -16px;
-  height: calc(var(--ph) + 32px + var(--n) * (var(--ih) + var(--gap)) + 24px);
+  height: calc(var(--ph) + var(--rise) + 72px);
   pointer-events: none;
   filter: url(#rc-goo);
 }
-.rc-pill__base,
-.rc-pill__drop {
+.rc-pill__base {
   position: absolute;
   left: 32px;
-  background: var(--ash-deep);
-}
-.rc-pill__base {
   right: 32px;
   bottom: 16px;
   height: var(--ph);
-  border-radius: 999px;
-  transition: border-radius 0.5s var(--ease-out);
+  border-radius: 24px;
+  background: var(--ash-deep);
+  transition: height 0.42s cubic-bezier(0.6, 0, 0.3, 1);
 }
-.rc-pill__drop {
-  bottom: calc(16px + var(--ph) + var(--gap) + var(--k) * (var(--ih) + var(--gap)));
-  width: var(--mw);
-  height: var(--ih);
-  border-radius: 22px;
-  /* Closed: every blob sits inside the pill, shrunk. */
-  transform: translateY(calc((var(--k) + 1) * (var(--ih) + var(--gap)))) scale(0.42);
-  transition:
-    transform 0.5s cubic-bezier(0.5, 0, 0.75, 0),
-    background-color 0.3s ease;
-  transition-delay: calc((var(--n) - 1 - var(--k)) * 24ms), 0s;
+.rc-pill[data-open] .rc-pill__base {
+  height: calc(var(--ph) + var(--rise));
+  transition: height 0.68s cubic-bezier(0.3, 1.32, 0.45, 1);
 }
-.rc-pill[data-open] .rc-pill__drop {
-  transform: none;
-  transition:
-    transform 0.72s cubic-bezier(0.3, 1.45, 0.45, 1),
-    background-color 0.3s ease;
-  transition-delay: calc(var(--k) * 42ms), 0s;
+/* A soft swell on the leading edge while the panel rises. Hidden at rest. */
+.rc-pill__dome {
+  position: absolute;
+  left: 16%;
+  right: 16%;
+  top: 0;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--ash-deep);
+  transform: translateY(12px) scaleX(0.7);
 }
-.rc-pill[data-open] .rc-pill__drop.is-hot {
-  transform: scale(1.05, 1.2);
-  transition:
-    transform 0.5s cubic-bezier(0.3, 1.8, 0.45, 1),
-    background-color 0.25s ease;
-  transition-delay: 0s;
+.rc-pill[data-open] .rc-pill__dome {
+  animation: rc-dome 0.72s var(--ease-out);
+}
+@keyframes rc-dome {
+  0% {
+    transform: translateY(12px) scaleX(0.7);
+  }
+  34% {
+    transform: translateY(-9px) scaleX(1);
+  }
+  100% {
+    transform: translateY(12px) scaleX(0.8);
+  }
 }
 
 /* Text layer */
 .rc-pill__menu {
   position: absolute;
-  left: 5px;
-  bottom: calc(100% + var(--gap));
-  width: var(--mw);
-  display: flex;
-  flex-direction: column;
-  gap: var(--gap);
-  margin-left: -5px;
+  left: var(--pad);
+  right: var(--pad);
+  bottom: 100%;
+  padding-top: var(--pad);
   visibility: hidden;
   pointer-events: none;
-  transition: visibility 0s 0.5s;
+  transition: visibility 0s 0.4s;
 }
 .rc-pill[data-open] .rc-pill__menu {
   visibility: visible;
   pointer-events: auto;
   transition-delay: 0s;
 }
-/* A small bridge so the pointer can travel from the pill to the menu. */
-.rc-pill__menu::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 100%;
-  height: calc(var(--gap) + 4px);
-}
 .rc-pill__menu li {
   height: var(--ih);
   opacity: 0;
-  transform: translateY(calc((var(--k) + 1) * (var(--ih) + var(--gap)))) scale(0.42);
+  transform: translateY(calc(14px + var(--k) * 5px));
   transition:
-    transform 0.5s cubic-bezier(0.5, 0, 0.75, 0),
-    opacity 0.16s ease;
-  transition-delay: calc((var(--n) - 1 - var(--k)) * 24ms);
+    transform 0.3s ease,
+    opacity 0.14s ease;
+  transition-delay: 0s;
 }
 .rc-pill[data-open] .rc-pill__menu li {
   opacity: 1;
   transform: none;
   transition:
-    transform 0.72s cubic-bezier(0.3, 1.45, 0.45, 1),
-    opacity 0.3s ease;
-  transition-delay: calc(var(--k) * 42ms), calc(var(--k) * 42ms + 90ms);
+    transform 0.7s var(--ease-out),
+    opacity 0.35s ease;
+  transition-delay: calc(90ms + var(--k) * 36ms);
 }
 .rc-pill__menu a {
   position: relative;
@@ -1074,13 +1064,13 @@ html.rc-loading .rc-pill {
   align-items: center;
   gap: 14px;
   height: 100%;
-  padding: 2px 18px 0;
-  border-radius: 22px;
+  padding: 2px 14px 0;
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 21px;
   line-height: 1;
   letter-spacing: -0.01em;
+  white-space: nowrap;
   transition:
     color 0.25s ease,
     transform 0.5s var(--ease-out);
@@ -1101,19 +1091,19 @@ html.rc-loading .rc-pill {
   margin-left: auto;
   background: var(--salt);
 }
-/* The colour itself: a crisp capsule that swells into place under the label. */
+/* The colour: a crisp block that grows into place under the label. */
 .rc-pill__menu a::before {
   content: "";
   position: absolute;
   z-index: -1;
-  inset: 3px;
-  border-radius: 20px;
+  inset: 1px 0;
+  border-radius: 18px;
   background: var(--tint);
   opacity: 0;
-  transform: scale(0.82, 0.5);
+  transform: scale(0.9, 0.55);
   transition:
-    transform 0.5s cubic-bezier(0.3, 1.6, 0.45, 1),
-    opacity 0.18s ease;
+    transform 0.45s cubic-bezier(0.3, 1.5, 0.45, 1),
+    opacity 0.16s ease;
 }
 .rc-pill__menu li.is-hot a::before {
   opacity: 1;
@@ -1121,7 +1111,7 @@ html.rc-loading .rc-pill {
 }
 .rc-pill__menu li.is-hot a {
   color: var(--ash-deep);
-  transform: translateX(6px);
+  transform: translateX(4px);
 }
 .rc-pill__menu li.is-hot a span {
   color: rgba(37, 39, 36, 0.6);
@@ -1137,11 +1127,12 @@ html.rc-loading .rc-pill {
 .rc-pill__where {
   display: flex;
   align-items: center;
+  flex: 1;
   gap: 10px;
-  min-width: 168px;
+  min-width: 204px;
   padding: 0 14px 0 16px;
   border: 0;
-  border-radius: 999px;
+  border-radius: 19px;
   background: transparent;
   font-size: 13px;
   font-weight: 500;
@@ -1184,7 +1175,7 @@ html.rc-loading .rc-pill {
   align-items: center;
   gap: 10px;
   padding: 1px 20px 0;
-  border-radius: 999px;
+  border-radius: 19px;
   background: var(--cloud);
   color: var(--ash-deep);
   font-size: 13px;
