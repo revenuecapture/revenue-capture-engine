@@ -1,5 +1,5 @@
 import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
-import { ask } from "../content";
+import { ask, privacy } from "../content";
 import { Arrow } from "./Shell";
 import { useMagnetic } from "./Cursor";
 
@@ -126,6 +126,9 @@ export default function AskForm({
         </button>
         <p className="rc-form__note" data-state={status} role="status" aria-live="polite">
           {note}
+        </p>
+        <p className="rc-form__legal">
+          {privacy.formNote} <a href="/privacy">How we handle your data</a>
         </p>
       </div>
     </form>

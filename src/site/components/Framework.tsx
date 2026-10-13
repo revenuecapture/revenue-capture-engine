@@ -36,12 +36,6 @@ export function Panels({ linked = false }: { linked?: boolean }) {
       {steps.map((s) => {
         const body = (
           <>
-            <span className="rc-fw__meta rc-label">
-              <span>{framework.label}</span>
-              <span>
-                {s.n} / {String(steps.length).padStart(2, "0")}
-              </span>
-            </span>
             <span className="rc-fw__num" aria-hidden="true">
               {s.n}
             </span>
@@ -90,9 +84,6 @@ export function FrameworkStack() {
   return (
     <section className="rc-fw" data-theme="dark">
       <div className="rc-fw__intro">
-        <p className="rc-label" data-reveal>
-          {framework.label}
-        </p>
         <h2 className="rc-h2" data-reveal>
           {framework.title}
           <i className="rc-dot">.</i>

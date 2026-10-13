@@ -76,7 +76,7 @@ export function PageHero({
   compact = false,
   children,
 }: {
-  label: string;
+  label?: string;
   lines: readonly string[];
   lede?: string;
   /** A shorter hero, for pages where something else must sit above the fold. */
@@ -88,9 +88,11 @@ export function PageHero({
       <Lines />
       <TopBar />
       <div className="rc-phero__body">
-        <p className="rc-label rc-phero__label" data-intro style={{ ["--d" as string]: 200 }}>
-          {label}
-        </p>
+        {label && (
+          <p className="rc-label rc-phero__label" data-intro style={{ ["--d" as string]: 200 }}>
+            {label}
+          </p>
+        )}
         <h1
           className="rc-phero__title"
           style={{ ["--chars" as string]: Math.max(...lines.map((l, i) => l.length + (i === lines.length - 1 ? 1 : 0))) }}

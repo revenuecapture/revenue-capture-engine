@@ -1,6 +1,6 @@
 // One component per page. Shared pieces live in ./components.
 import { useEffect, useRef, useState } from "react";
-import { about, ask, audits, framework, pages, pricing, privacy, steps, work, type Word } from "./content";
+import { about, ask, audits, framework, pages, pricing, privacy, steps, work, type LegalBlock, type Word } from "./content";
 import { clamp01, onScrollFrame, prefersReducedMotion, scrollToId } from "./lib/motion";
 import Hero from "./components/Hero";
 import Proof, { Brands, Mark, Stats } from "./components/Proof";
@@ -124,7 +124,7 @@ export function FrameworkPage() {
   usePage(title("/framework"));
   return (
     <>
-      <PageHero label={framework.label} lines={framework.titleLines} lede={framework.lede}>
+      <PageHero lines={framework.titleLines} lede={framework.lede}>
         <ul className="rc-steps rc-steps--stack">
           {steps.map((s) => (
             <li key={s.n} style={{ ["--chip" as string]: `var(--${s.chip})` }}>
@@ -358,20 +358,111 @@ export function AuditPage() {
   );
 }
 
+/** Turns email addresses and ico.org.uk in legal copy into links. */
+function Linked({ text }: { text: string }) {
+  const parts = text.split(/([\w.+-]+@[\w-]+\.[\w.]+\w|ico\.org\.uk)/g);
+  return (
+    <>
+      {parts.map((part, i) =>
+        i % 2 === 0 ? (
+          part
+        ) : part.includes("@") ? (
+          <a key={i} href={`mailto:${part}`}>
+            {part}
+          </a>
+        ) : (
+          <a key={i} href={`https://${part}`} target="_blank" rel="noreferrer">
+            {part}
+          </a>
+        ),
+      )}
+    </>
+  );
+}
+
+/** Keeps references like 6(1)(b) on one line. */
+const glue = (s: string) => s.replace(/\)\(/g, ")\u2060(").replace(/(\d)\(/g, "$1\u2060(");
+
+function LegalBlockView({ block }: { block: LegalBlock }) {
+  if (typeof block === "string")
+    return (
+      <p>
+        <Linked text={block} />
+      </p>
+    );
+  if ("list" in block)
+    return (
+      <ul className="rc-legal__list">
+        {block.list.map((item) => {
+          const cut = item.indexOf(": ");
+          return (
+            <li key={item}>
+              {cut > 0 && cut < 60 ? (
+                <>
+                  <strong>{item.slice(0, cut)}</strong>
+                  {": "}
+                  <Linked text={item.slice(cut + 2)} />
+                </>
+              ) : (
+                <Linked text={item} />
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    );
+  return (
+    <div className="rc-legal__rows">
+      {block.rows.map((r) => (
+        <dl className="rc-legal__row" key={r.purpose}>
+          <dt>{r.purpose}</dt>
+          <dd>
+            <span className="rc-label">Data</span>
+            {glue(r.data)}
+          </dd>
+          <dd>
+            <span className="rc-label">Legal basis</span>
+            {glue(r.basis)}
+          </dd>
+        </dl>
+      ))}
+    </div>
+  );
+}
+
 export function PrivacyPage() {
   usePage("Privacy | revCap");
   return (
     <>
-      <PageHero label={privacy.label} lines={privacy.titleLines} lede={privacy.status} />
+      <PageHero label={privacy.label} lines={privacy.titleLines} lede={privacy.lede} />
       <main id="main">
-        <section className="rc-plain" data-theme="light">
-          <ul>
-            {privacy.points.map((p) => (
-              <li key={p} data-reveal>
-                {p}
-              </li>
+        <section className="rc-legal" data-theme="light">
+          <nav className="rc-legal__index" aria-label="Sections">
+            <p className="rc-label">Last updated {privacy.updated}</p>
+            <ol>
+              {privacy.sections.map((sec, i) => (
+                <li key={sec.id}>
+                  <a href={`#${sec.id}`}>
+                    <span>{String(i + 1).padStart(2, "0")}</span>
+                    {sec.title}
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </nav>
+          <div className="rc-legal__body">
+            {privacy.sections.map((sec, i) => (
+              <section className="rc-legal__sec" id={sec.id} key={sec.id}>
+                <h2 className="rc-legal__h">
+                  <span>{String(i + 1).padStart(2, "0")}</span>
+                  {sec.title}
+                </h2>
+                {sec.blocks.map((block, j) => (
+                  <LegalBlockView block={block} key={j} />
+                ))}
+              </section>
             ))}
-          </ul>
+          </div>
         </section>
       </main>
     </>

@@ -122,7 +122,6 @@ export const problem = {
 };
 
 export const framework = {
-  label: "How we work",
   title: "The blueprint",
   titleLines: ["The", "blueprint"],
   intro: "One system, four steps. Each one hands the next a warmer audience.",
@@ -298,14 +297,185 @@ export const ask = {
   error: "That did not send. Email info@revcap.xyz and we will pick it up.",
 };
 
+/* ── Privacy ───────────────────────────────────────────────
+   LEGAL_NAME is the only thing to change once the company is registered.
+   Put the registered name here (for example "revCap (Private) Limited") and
+   the notice will read "<registered name> (trading as revCap)" where it
+   identifies the company. Add the registered address to the Contact section. */
+export const LEGAL_NAME = "revCap";
+
+const company = LEGAL_NAME === brand.name ? brand.name : `${LEGAL_NAME} (trading as ${brand.name})`;
+
+export type LegalBlock =
+  | string
+  | { list: string[] }
+  | { rows: { purpose: string; data: string; basis: string }[] };
+
 export const privacy = {
   label: "Privacy",
   titleLines: ["Privacy"],
-  status: "Placeholder. A full policy will replace this page once revCap is registered as a company.",
-  points: [
-    "The audit form collects your name, business name, email address and anything you choose to write, so that we can reply to your request.",
-    "Form submissions are delivered to us by Web3Forms, a form service.",
-    "This site sets no advertising or analytics cookies.",
-    "To have your details removed, email info@revcap.xyz.",
-  ],
+  updated: "13 October 2026",
+  lede: `How ${brand.name} collects, uses and protects personal data, and the rights you have over it.`,
+  sections: [
+    {
+      id: "who",
+      title: "Who we are",
+      blocks: [
+        `${company} is a revenue operations agency based in Lahore, Pakistan. We are the controller of the personal data described in this notice, which means we decide why and how it is used.`,
+        "This notice covers revcap.xyz, our free audits and our work with clients. We follow the EU General Data Protection Regulation (GDPR) and the UK GDPR, and we give the same rights to everyone, wherever they live.",
+        "For any question or request about your data, email info@revcap.xyz.",
+      ],
+    },
+    {
+      id: "collect",
+      title: "What we collect",
+      blocks: [
+        "We collect only what we need to answer you and to do the work.",
+        {
+          list: [
+            "Audit requests: your name, business name, work email address, the audit you choose, and anything you write in the message field.",
+            "Correspondence: your name, contact details, role and company, and what you send us.",
+            "Client work: the contact details of the people we work with, and the information a client shares with us so we can deliver the work.",
+            "Public information about your business: to prepare an audit we review what your business publishes, such as its website, social profiles and adverts.",
+            "Technical data: when you load a page, our hosting provider's servers receive your IP address, browser and device details, the page requested and the time. Every website works this way. We do not use this data to identify you.",
+          ],
+        },
+        "Please do not send us sensitive information, such as health details, through the form or by email. We do not need it.",
+      ],
+    },
+    {
+      id: "use",
+      title: "How we use it",
+      blocks: [
+        "Each use has a legal basis under Article 6 of the GDPR.",
+        {
+          rows: [
+            {
+              purpose: "Reply to your audit request and prepare the audit",
+              data: "Audit request details; public information about your business",
+              basis: "Steps you asked us to take before a contract (6(1)(b)), or our legitimate interest in answering business enquiries (6(1)(f))",
+            },
+            {
+              purpose: "Follow up about your audit and how we could work together",
+              data: "Name, business, email address, correspondence",
+              basis: "Our legitimate interest in following up with businesses that asked to hear from us (6(1)(f)). You can tell us to stop at any time.",
+            },
+            {
+              purpose: "Deliver our services and manage the relationship",
+              data: "Client contact details, correspondence, material shared for the work",
+              basis: "Performance of a contract (6(1)(b))",
+            },
+            {
+              purpose: "Keep this website secure and working",
+              data: "Technical data",
+              basis: "Our legitimate interest in running a secure website (6(1)(f))",
+            },
+            {
+              purpose: "Meet legal obligations and deal with legal claims",
+              data: "Only what the obligation or claim requires",
+              basis: "Legal obligation (6(1)(c)); our legitimate interest in defending our rights (6(1)(f))",
+            },
+          ],
+        },
+        "We do not sell personal data. We do not make decisions about you by automated means, and we do not build profiles of you.",
+      ],
+    },
+    {
+      id: "share",
+      title: "Who we share it with",
+      blocks: [
+        "We use a small number of service providers, who handle data on our behalf under their data processing terms.",
+        {
+          list: [
+            "Web3Forms, run by Web3Creative (India), receives what you submit through the audit form and delivers it to our inbox. Along with your answers it processes technical details such as your IP address, the time and the page you sent it from, and it uses its own providers for hosting and spam filtering.",
+            "Netlify, Inc. (United States) hosts this website.",
+            "Our email provider keeps our correspondence, including audit requests.",
+            "Professional advisers, such as accountants and lawyers, when we need their advice.",
+            "Courts, regulators and other authorities, when the law requires it.",
+          ],
+        },
+      ],
+    },
+    {
+      id: "transfers",
+      title: "Where your data goes",
+      blocks: [
+        "We work from Pakistan, and the providers above operate from India, the United States and the European Union. Your data is therefore handled outside the UK and the European Economic Area, including in countries whose data protection laws have not been recognised as equivalent to the GDPR.",
+        "Where our providers move data across borders they rely on recognised safeguards. Web3Forms' data processing terms include the European Commission's Standard Contractual Clauses. Netlify uses Standard Contractual Clauses and takes part in the EU-U.S. Data Privacy Framework. Ask us if you would like more detail.",
+      ],
+    },
+    {
+      id: "retention",
+      title: "How long we keep it",
+      blocks: [
+        {
+          list: [
+            "Audit requests that do not lead to work together: up to 12 months after our last contact, then deleted.",
+            "Client records: for the length of the engagement, then for as long as the law requires us to keep business records.",
+            "Copies held by our providers follow their own terms. Web3Forms' terms allow it to keep submission data for up to three years, and it says it deletes its server logs about every two months. Netlify keeps hosting logs for a limited period.",
+          ],
+        },
+        "You can ask us to delete your data sooner at any time.",
+      ],
+    },
+    {
+      id: "cookies",
+      title: "Cookies and tracking",
+      blocks: [
+        "The public pages of revcap.xyz set no cookies. There is no analytics, no advertising pixel and no third-party tracker, and our fonts are served from our own domain.",
+        "One small item is kept in your browser's session storage to remember that the opening animation has already played. It holds no personal data, never leaves your browser, and is cleared when you close the tab.",
+        "If we add analytics or advertising tools in future, we will update this notice first and ask for your consent where the law requires it.",
+      ],
+    },
+    {
+      id: "rights",
+      title: "Your rights",
+      blocks: [
+        {
+          list: [
+            "Access: ask for a copy of the personal data we hold about you.",
+            "Correction: ask us to fix anything inaccurate or incomplete.",
+            "Erasure: ask us to delete your data.",
+            "Restriction: ask us to limit how we use it while a concern is looked into.",
+            "Objection: object to any use based on our legitimate interests. If you object to follow-up about our services, we stop.",
+            "Portability: ask for the data you gave us in a common, machine-readable format.",
+            "Consent: where we rely on your consent, withdraw it at any time.",
+          ],
+        },
+        "Email info@revcap.xyz to use any of these rights. There is no charge. We reply within one month, and we may ask you to confirm your identity first.",
+        "You can also complain to a data protection authority: the one where you live or work in the EU, or the Information Commissioner's Office in the UK (ico.org.uk). We would appreciate the chance to put things right first.",
+      ],
+    },
+    {
+      id: "security",
+      title: "Keeping it safe",
+      blocks: [
+        "This site is served over an encrypted connection (HTTPS), and only the people at revCap who need your data can access it.",
+        "No way of sending or storing data is completely secure. If a breach puts your data at risk, we will tell you and the relevant authority as the law requires.",
+      ],
+    },
+    {
+      id: "clients",
+      title: "When we act for clients",
+      blocks: [
+        "When we run marketing or sales work for a client, we may handle personal data on that client's behalf, such as their leads or customers. The client is the controller of that data and its own privacy notice applies. If your question is about that data, contact the client, or write to us and we will pass it on.",
+      ],
+    },
+    {
+      id: "children",
+      title: "Children",
+      blocks: ["Our services are for businesses. We do not knowingly collect personal data from anyone under 16."],
+    },
+    {
+      id: "changes",
+      title: "Changes",
+      blocks: ["We update this notice when what we do changes. The date at the top shows when it last changed."],
+    },
+    {
+      id: "contact",
+      title: "Contact",
+      blocks: [`${company}, Lahore, Pakistan. Email info@revcap.xyz.`],
+    },
+  ] as { id: string; title: string; blocks: LegalBlock[] }[],
+  formNote: "We use these details to reply and prepare your audit.",
 };
