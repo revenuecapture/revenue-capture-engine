@@ -715,20 +715,11 @@ html.rc-js [data-reveal="lines"].is-in .rc-line > span {
   height: 100%;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: auto 1fr;
-  padding: 0 var(--gutter);
+  grid-template-rows: 1fr;
+  padding: 58px var(--gutter) 0;
   transform-origin: 50% 0;
   transform: scale(calc(1 - var(--cover, 0) * 0.05));
   opacity: calc(1 - var(--cover, 0) * 0.55);
-}
-.rc-fw__meta {
-  grid-column: 1 / 5;
-  display: flex;
-  justify-content: space-between;
-  padding: 22px 0;
-}
-.rc-fw__meta span:last-child {
-  color: var(--accent);
 }
 .rc-fw__num {
   grid-column: 1 / 3;
@@ -939,8 +930,16 @@ html.rc-js [data-reveal="lines"].is-in .rc-line > span {
   color: var(--muted);
 }
 
-/* ── Bottom pill ────────────────────────────────────────── */
+/* ── Bottom pill ──────────────────────────────────────────
+   The bar and its menu are one shape. Opening it grows that shape upward
+   into a single rounded panel, the same width as the bar. The shape sits in
+   its own layer behind the text; a light filter there gives it its outline
+   and lets the top edge swell briefly while it rises. */
 .rc-pill {
+  --ph: 48px; /* bar height */
+  --ih: 44px; /* menu item height */
+  --pad: 6px; /* panel padding */
+  --rise: calc(var(--n) * var(--ih) + var(--pad) * 2);
   position: fixed;
   left: 50%;
   bottom: max(18px, env(safe-area-inset-bottom));
@@ -948,11 +947,10 @@ html.rc-js [data-reveal="lines"].is-in .rc-line > span {
   display: flex;
   align-items: stretch;
   gap: 4px;
+  height: var(--ph);
+  min-width: 216px;
   padding: 5px;
-  border-radius: 999px;
-  background: var(--ash-deep);
   color: var(--cloud);
-  box-shadow: 0 0 0 1px rgba(240, 238, 233, 0.16);
   transform: translate(-50%, 0);
   transition:
     transform 0.9s var(--ease-out),
@@ -963,14 +961,169 @@ html.rc-loading .rc-pill {
   transform: translate(-50%, 140%);
   opacity: 0;
 }
+.rc-pill__defs {
+  position: absolute;
+}
+
+/* Shape layer */
+.rc-pill__goo {
+  position: absolute;
+  left: -32px;
+  right: -32px;
+  bottom: -16px;
+  height: calc(var(--ph) + var(--rise) + 72px);
+  pointer-events: none;
+  filter: url(#rc-goo);
+}
+.rc-pill__base {
+  position: absolute;
+  left: 32px;
+  right: 32px;
+  bottom: 16px;
+  height: var(--ph);
+  border-radius: 24px;
+  background: var(--ash-deep);
+  transition: height 0.42s cubic-bezier(0.6, 0, 0.3, 1);
+}
+.rc-pill[data-open] .rc-pill__base {
+  height: calc(var(--ph) + var(--rise));
+  transition: height 0.68s cubic-bezier(0.3, 1.32, 0.45, 1);
+}
+/* A soft swell on the leading edge while the panel rises. Hidden at rest. */
+.rc-pill__dome {
+  position: absolute;
+  left: 16%;
+  right: 16%;
+  top: 0;
+  height: 30px; /* at rest it must sit wholly inside the bar, or it shows as a bump underneath */
+  border-radius: 50%;
+  background: var(--ash-deep);
+  transform: translateY(10px) scaleX(0.7);
+}
+.rc-pill[data-open] .rc-pill__dome {
+  animation: rc-dome 0.72s var(--ease-out);
+}
+@keyframes rc-dome {
+  0% {
+    transform: translateY(10px) scaleX(0.7);
+  }
+  34% {
+    transform: translateY(-9px) scaleX(1);
+  }
+  100% {
+    transform: translateY(10px) scaleX(0.7);
+  }
+}
+
+/* Text layer */
+.rc-pill__menu {
+  position: absolute;
+  left: var(--pad);
+  right: var(--pad);
+  bottom: 100%;
+  padding-top: var(--pad);
+  visibility: hidden;
+  pointer-events: none;
+  transition: visibility 0s 0.4s;
+}
+.rc-pill[data-open] .rc-pill__menu {
+  visibility: visible;
+  pointer-events: auto;
+  transition-delay: 0s;
+}
+.rc-pill__menu li {
+  height: var(--ih);
+  opacity: 0;
+  transform: translateY(calc(14px + var(--k) * 5px));
+  transition:
+    transform 0.3s ease,
+    opacity 0.14s ease;
+  transition-delay: 0s;
+}
+.rc-pill[data-open] .rc-pill__menu li {
+  opacity: 1;
+  transform: none;
+  transition:
+    transform 0.7s var(--ease-out),
+    opacity 0.35s ease;
+  transition-delay: calc(90ms + var(--k) * 36ms);
+}
+.rc-pill__menu a {
+  position: relative;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: 100%;
+  padding: 2px 14px 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 21px;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  transition:
+    color 0.25s ease,
+    transform 0.5s var(--ease-out);
+}
+.rc-pill__menu a span {
+  width: 18px;
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: rgba(240, 238, 233, 0.5);
+  transition: color 0.25s ease;
+}
+.rc-pill__menu a[aria-current="page"]::after {
+  content: "";
+  width: 7px;
+  height: 7px;
+  margin-left: auto;
+  background: var(--salt);
+}
+/* The colour: a crisp block that grows into place under the label. */
+.rc-pill__menu a::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 1px 0;
+  border-radius: 18px;
+  background: var(--tint);
+  opacity: 0;
+  transform: scale(0.9, 0.55);
+  transition:
+    transform 0.45s cubic-bezier(0.3, 1.5, 0.45, 1),
+    opacity 0.16s ease;
+}
+.rc-pill__menu li.is-hot a::before {
+  opacity: 1;
+  transform: none;
+}
+.rc-pill__menu li.is-hot a {
+  color: var(--ash-deep);
+  transform: translateX(4px);
+}
+.rc-pill__menu li.is-hot a span {
+  color: rgba(37, 39, 36, 0.6);
+}
+.rc-pill__menu li.is-hot a[aria-current="page"]::after {
+  background: var(--ash-deep);
+}
+
+.rc-pill__where,
+.rc-pill__cta {
+  position: relative;
+}
 .rc-pill__where {
   display: flex;
   align-items: center;
+  flex: 1;
   gap: 10px;
-  min-width: 168px;
+  min-width: 204px;
   padding: 0 14px 0 16px;
   border: 0;
-  border-radius: 999px;
+  border-radius: 19px;
   background: transparent;
   font-size: 13px;
   font-weight: 500;
@@ -978,36 +1131,42 @@ html.rc-loading .rc-pill {
   transition: background-color 0.25s ease;
 }
 .rc-pill__where:hover,
-.rc-pill__where[aria-expanded="true"] {
+.rc-pill[data-open] .rc-pill__where {
   background: rgba(240, 238, 233, 0.09);
 }
 .rc-pill__dot {
   width: 8px;
   height: 8px;
   flex: none;
-  background: var(--salt);
-  transition: background-color 0.4s ease;
+  background: var(--hot, var(--salt));
+  transition: background-color 0.3s ease;
 }
 .rc-pill__name {
   flex: 1;
   text-align: left;
   white-space: nowrap;
 }
+.rc-pill__menuword {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(240, 238, 233, 0.55);
+}
 .rc-pill__where svg {
   width: 10px;
   height: 7px;
   opacity: 0.7;
-  transition: transform 0.35s var(--ease-out);
+  transition: transform 0.45s var(--ease-out);
 }
-.rc-pill__where[aria-expanded="true"] svg {
+.rc-pill[data-open] .rc-pill__where svg {
   transform: rotate(180deg);
 }
 .rc-pill__cta {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 13px 20px 12px;
-  border-radius: 999px;
+  padding: 1px 20px 0;
+  border-radius: 19px;
   background: var(--cloud);
   color: var(--ash-deep);
   font-size: 13px;
@@ -1019,166 +1178,45 @@ html.rc-loading .rc-pill {
 .rc-pill__cta:hover {
   background: var(--salt);
 }
-.rc-pill__menu {
-  position: absolute;
-  left: 0;
-  bottom: calc(100% + 8px);
-  min-width: 100%;
-  padding: 8px;
-  border-radius: 22px;
-  background: var(--ash-deep);
-  box-shadow: 0 0 0 1px rgba(240, 238, 233, 0.16);
-}
-.rc-pill__menu a {
-  display: flex;
-  align-items: baseline;
-  gap: 14px;
-  padding: 11px 14px 10px;
-  border-radius: 14px;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 22px;
-  line-height: 1;
-  letter-spacing: -0.01em;
-}
-.rc-pill__menu a span {
-  font-family: var(--font-body);
-  font-weight: 500;
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  color: rgba(240, 238, 233, 0.5);
-}
-.rc-pill__menu a:hover,
-.rc-pill__menu a[aria-current="true"] {
-  background: rgba(240, 238, 233, 0.09);
-}
 
-/* ── Cursor: a glass bead with a fluid colour trail ─────── */
-.rc-lens-defs {
+/* ── Cursor: one drop of liquid glass ──────────────────── */
+.rc-drop-defs {
   position: absolute;
   width: 0;
   height: 0;
 }
-.rc-trail {
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 108;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-html.rc-cursor-on .rc-trail {
-  opacity: 0.92;
-}
-.rc-bead {
-  --s: 46px;
+.rc-drop {
   position: fixed;
   left: 0;
   top: 0;
   z-index: 110;
+  width: 360px;
+  height: 360px;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.25s ease;
+  filter: url(#rc-drop) drop-shadow(0 8px 12px rgba(37, 39, 36, 0.28));
+  transition: opacity 0.3s ease;
+  will-change: transform;
 }
-html.rc-cursor-on .rc-bead {
+html.rc-cursor-on .rc-drop {
+  opacity: 0.94;
+}
+/* Over links the drop thins so the words under it stay readable. */
+html.rc-cursor-on .rc-drop[data-state="link"] {
+  opacity: 0.5;
+}
+html.rc-cursor-on .rc-drop[data-state="tag"] {
   opacity: 1;
 }
-html.rc-cursor-on .rc-bead[data-state="field"] {
+html.rc-cursor-on .rc-drop[data-state="field"] {
   opacity: 0;
 }
-.rc-bead[data-state="link"] {
-  --s: 68px;
-}
-.rc-bead[data-state="tag"] {
-  --s: 98px;
-}
-.rc-bead__body {
-  position: absolute;
+.rc-drop__label {
+  position: fixed;
   left: 0;
   top: 0;
-  width: var(--s);
-  height: var(--s);
-  margin: calc(var(--s) / -2) 0 0 calc(var(--s) / -2);
-  border-radius: 50%;
-  will-change: transform;
-  transition:
-    width 0.5s var(--ease-out),
-    height 0.5s var(--ease-out),
-    margin 0.5s var(--ease-out);
-}
-.rc-bead__glass,
-.rc-bead__rim {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  transition:
-    transform 0.35s var(--ease-out),
-    background-color 0.3s ease;
-}
-/* The glass itself: bends what is under it, with a highlight top-left and a soft shadow at the base. */
-.rc-bead__glass {
-  -webkit-backdrop-filter: blur(1.2px) saturate(1.7) brightness(1.07);
-  backdrop-filter: blur(1.2px) saturate(1.7) brightness(1.07);
-  background:
-    radial-gradient(60% 50% at 32% 24%, rgba(255, 255, 255, 0.72) 0, rgba(255, 255, 255, 0.16) 46%, rgba(255, 255, 255, 0) 70%),
-    radial-gradient(70% 60% at 68% 84%, rgba(255, 255, 255, 0.26) 0, rgba(255, 255, 255, 0) 70%);
-  box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.5),
-    inset 0 -7px 12px -5px rgba(37, 39, 36, 0.34),
-    inset 0 6px 9px -5px rgba(255, 255, 255, 0.8),
-    0 8px 20px -8px rgba(37, 39, 36, 0.45);
-}
-/* On light sections the bead needs a darker edge to read as glass rather than a white disc. */
-.rc-bead[data-theme="light"] .rc-bead__glass {
-  background:
-    radial-gradient(52% 44% at 32% 24%, rgba(255, 255, 255, 0.62) 0, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0) 72%),
-    radial-gradient(80% 70% at 66% 88%, rgba(37, 39, 36, 0.1) 0, rgba(37, 39, 36, 0) 70%);
-  box-shadow:
-    inset 0 0 0 1px rgba(55, 58, 54, 0.2),
-    inset 0 -9px 14px -6px rgba(37, 39, 36, 0.32),
-    inset 0 6px 9px -5px rgba(255, 255, 255, 0.95),
-    0 10px 22px -8px rgba(37, 39, 36, 0.42);
-}
-html.rc-lens .rc-bead__glass {
-  -webkit-backdrop-filter: url(#rc-lens) saturate(1.6) brightness(1.06);
-  backdrop-filter: url(#rc-lens) saturate(1.6) brightness(1.06);
-}
-/* Over links the bead clears to a plain magnifying ring, so the link stays readable. */
-html.rc .rc-bead[data-state="link"] .rc-bead__glass {
-  -webkit-backdrop-filter: saturate(1.5) brightness(1.03);
-  backdrop-filter: saturate(1.5) brightness(1.03);
-  background: radial-gradient(46% 38% at 30% 22%, rgba(255, 255, 255, 0.34) 0, rgba(255, 255, 255, 0) 72%);
-  box-shadow:
-    inset 0 0 0 1px rgba(55, 58, 54, 0.14),
-    inset 0 -8px 14px -8px rgba(37, 39, 36, 0.22),
-    0 10px 22px -10px rgba(37, 39, 36, 0.36);
-}
-/* A thin ring in the three brand tints, like light catching the edge. */
-.rc-bead__rim {
-  background: conic-gradient(from 210deg, var(--ice), var(--salt), var(--moth), var(--ice));
-  -webkit-mask: radial-gradient(closest-side, transparent calc(100% - 2.5px), #000 calc(100% - 1.5px));
-  mask: radial-gradient(closest-side, transparent calc(100% - 2.5px), #000 calc(100% - 1.5px));
-  opacity: 0.95;
-}
-.rc-bead.is-down .rc-bead__glass,
-.rc-bead.is-down .rc-bead__rim {
-  transform: scale(0.82);
-}
-.rc-bead[data-state="tag"] .rc-bead__glass {
-  -webkit-backdrop-filter: blur(6px) saturate(1.4);
-  backdrop-filter: blur(6px) saturate(1.4);
-  background-color: rgba(116, 46, 52, 0.9);
-}
-.rc-bead[data-state="tag"][data-theme="dark"] .rc-bead__glass {
-  background-color: rgba(240, 238, 233, 0.92);
-}
-.rc-bead__label {
-  position: absolute;
-  left: 0;
-  top: 0;
-  transform: translate(-50%, -50%) scale(0.6);
+  z-index: 111;
+  pointer-events: none;
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.08em;
@@ -1186,16 +1224,17 @@ html.rc .rc-bead[data-state="link"] .rc-bead__glass {
   white-space: nowrap;
   color: var(--cloud);
   opacity: 0;
+  scale: 0.6;
   transition:
     opacity 0.25s ease,
-    transform 0.45s var(--ease-out);
+    scale 0.45s var(--ease-out);
 }
-.rc-bead[data-theme="dark"] .rc-bead__label {
+.rc-drop__label[data-ink="dark"] {
   color: var(--ash-deep);
 }
-.rc-bead[data-state="tag"] .rc-bead__label {
+html.rc-cursor-on .rc-drop__label[data-on="1"] {
   opacity: 1;
-  transform: translate(-50%, -50%) scale(1);
+  scale: 1;
 }
 html.rc.rc-cursor-on,
 html.rc.rc-cursor-on * {
@@ -1303,9 +1342,9 @@ html.rc.rc-cursor-on select {
 
   .rc-fw__inner {
     grid-template-columns: 1fr;
-    grid-template-rows: auto auto 1fr;
+    grid-template-rows: auto 1fr;
+    padding-top: 28px;
   }
-  .rc-fw__meta,
   .rc-fw__num,
   .rc-fw__copy {
     grid-column: 1;
@@ -2021,20 +2060,152 @@ a.rc-row:hover .rc-row__go {
 }
 
 /* ── Plain text page ────────────────────────────────────── */
-.rc-plain {
-  padding: 0 var(--gutter) clamp(96px, 12vw, 184px);
-}
-.rc-plain ul {
+/* ── Legal text (privacy) ───────────────────────────────── */
+.rc-legal {
   display: grid;
-  gap: 0;
-  max-width: 64ch;
-  margin-left: 50%;
-  padding-left: 20px;
+  grid-template-columns: repeat(4, 1fr);
+  align-items: start;
+  padding: 0 var(--gutter) clamp(120px, 12vw, 184px);
+}
+.rc-legal__index {
+  grid-column: 1 / 2;
+  position: sticky;
+  top: 32px;
+  padding-right: 24px;
+}
+.rc-legal__index ol {
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
   border-top: 1px solid var(--line);
 }
-.rc-plain li {
-  padding: 20px 0;
+.rc-legal__index a {
+  display: flex;
+  gap: 12px;
+  padding: 9px 0;
   border-bottom: 1px solid var(--line);
+  font-size: 14px;
+  color: var(--fg);
+  transition: color 0.2s ease, padding 0.35s var(--ease-out);
+}
+.rc-legal__index a span {
+  width: 20px;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  line-height: 21px;
+  color: var(--muted);
+}
+.rc-legal__index a:hover {
+  color: var(--wine);
+  padding-left: 4px;
+}
+.rc-legal__body {
+  grid-column: 2 / 5;
+  max-width: 760px;
+  padding-left: 20px;
+}
+.rc-legal__sec {
+  padding: 34px 0 38px;
+  border-top: 1px solid var(--line);
+  scroll-margin-top: 24px;
+}
+.rc-legal__sec:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+.rc-legal__h {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 16px !important;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(26px, 2.4vw, 36px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--ash-deep);
+}
+.rc-legal__h span {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  color: var(--wine);
+}
+.rc-legal__sec p,
+.rc-legal__list {
+  max-width: 66ch;
+}
+.rc-legal__sec p + p,
+.rc-legal__sec p + ul,
+.rc-legal__sec ul + p,
+.rc-legal__sec p + .rc-legal__rows,
+.rc-legal__rows + p {
+  margin-top: 14px;
+}
+.rc-legal a[href^="mailto"],
+.rc-legal__sec a[target] {
+  color: var(--wine);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+.rc-legal__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.rc-legal__list li {
+  position: relative;
+  padding: 8px 0 8px 22px;
+}
+.rc-legal__list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 19px;
+  width: 7px;
+  height: 7px;
+  background: var(--blue);
+}
+.rc-legal__list strong {
+  font-weight: 600;
+  color: var(--ash-deep);
+}
+.rc-legal__rows {
+  border-top: 1px solid var(--line);
+}
+.rc-legal__row {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr 1.2fr;
+  gap: 8px 24px;
+  margin: 0;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 15px;
+  line-height: 1.55;
+}
+.rc-legal__row dt {
+  font-weight: 600;
+  color: var(--ash-deep);
+}
+.rc-legal__row dd {
+  margin: 0;
+}
+.rc-legal__row .rc-label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 10px;
+}
+.rc-form__legal {
+  flex-basis: 100%;
+  font-size: 13px;
+  color: var(--muted);
+}
+.rc-form__legal a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 /* ── Closing band ───────────────────────────────────────── */
@@ -2108,21 +2279,6 @@ a.rc-row:hover .rc-row__go {
 }
 .rc-foot__grid a:hover {
   color: var(--salt);
-}
-
-/* ── Pill, page mode ────────────────────────────────────── */
-.rc-pill__menuword {
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: rgba(240, 238, 233, 0.55);
-}
-.rc-pill__menu a[aria-current="page"] {
-  background: rgba(240, 238, 233, 0.09);
-}
-.rc-pill__where {
-  padding-top: 13px;
-  padding-bottom: 12px;
 }
 
 .rc-state--solo {
@@ -2208,9 +2364,20 @@ a.rc-row:hover .rc-row__go {
   .rc-card__n {
     margin-bottom: 24px;
   }
-  .rc-plain ul {
-    margin-left: 0;
+  .rc-legal {
+    grid-template-columns: 1fr;
+  }
+  .rc-legal__index {
+    position: static;
+    grid-column: 1;
+    padding: 0 0 48px;
+  }
+  .rc-legal__body {
+    grid-column: 1;
     padding-left: 0;
+  }
+  .rc-legal__row {
+    grid-template-columns: 1fr;
   }
   .rc-close__foot {
     grid-template-columns: 1fr;
